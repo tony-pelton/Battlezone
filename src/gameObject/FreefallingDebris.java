@@ -1,3 +1,7 @@
+/*
+*File added by Nathan MacLeod 2019
+*/
+
 package gameObject;
 
 import battlezone.Battlezone;
