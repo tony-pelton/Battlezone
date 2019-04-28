@@ -33,7 +33,7 @@ public class MainMenu extends ImagePage{
     
     protected BufferedImage setImage() {
         try {
-            return ImageIO.read(new File("./src/sprites/MainMenu.png"));
+            return ImageIO.read(Class.class.getResourceAsStream("/sprites/MainMenu.png"));
         }
         catch(Exception e) {
             System.out.println("Failed to load menu Image");
