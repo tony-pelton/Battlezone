@@ -16,6 +16,7 @@ import java.awt.event.*;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.io.File;
 import java.util.StringTokenizer;
 /**
  *
@@ -140,7 +141,7 @@ public class Battlezone extends JFrame implements Runnable {
         int[] nameChars = ((WriteHighScorePage)menuPages[5]).getNameChars();
         String name = "" + (char) nameChars[0] + (char) nameChars[1] + (char) nameChars[2];
         scoreList[replaceLocation] = name + score;
-        PrintWriter out = new PrintWriter(".\\src\\scores.txt");
+        PrintWriter out = new PrintWriter(new File(Class.class.getResource("/scores.txt").getFile()));
         for(int k = 0; k < scoreList.length; k++) {
             out.println(scoreList[k]);
         }
@@ -157,7 +158,7 @@ public class Battlezone extends JFrame implements Runnable {
         retrives the high scores from the text document
         */
         try {
-            Scanner wanner = new Scanner(new FileReader(".//src//scores.txt"));
+            Scanner wanner = new Scanner(Class.class.getResourceAsStream("/scores.txt"));
             String scores = "";
             while(wanner.hasNext()) {
                 scores += wanner.next() + " ";
