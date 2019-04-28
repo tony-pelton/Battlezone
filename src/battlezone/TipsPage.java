@@ -29,7 +29,7 @@ public class TipsPage extends ImagePage {
     
     protected BufferedImage setImage() {
         try {
-            return ImageIO.read(new File("./src/sprites/Tips.png"));
+            return ImageIO.read(Class.class.getResourceAsStream("/sprites/Tips.png"));
         }
         catch(Exception e) {
             System.out.println("Failed to load menu Image");
