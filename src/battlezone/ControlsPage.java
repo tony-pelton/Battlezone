@@ -3,39 +3,42 @@
  */
 package battlezone;
 
-import java.awt.event.KeyEvent;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 
 /**
  *
  * @author macle
  */
-public class ControlsPage extends ImagePage{
-    public ControlsPage(int[] screenDimensions) {
+public  abstract class ImagePage extends MenuPage {
+    private BufferedImage image;
+    
+    public ImagePage(int[] screenDimensions) {
         super(screenDimensions);
+        image = setImage();
     }
     
-    public int getStateChange(int keyPressed) {
-        switch(keyPressed) {
-            case KeyEvent.VK_SPACE:
-                return 0;
-            case KeyEvent.VK_W:
-                return 4;
-            case KeyEvent.VK_S:
-                return 2;
-        }
-        return -1;
-    } 
+    protected abstract BufferedImage setImage();
     
-    protected BufferedImage setImage() {
-        try {
-            return ImageIO.read(new File("./src/sprites/Controls.png"));
+    public abstract int getStateChange(int keyPress);
+    
+    public void draw(Graphics g) {
+        int[] screenDimensions = getScreenDimensions();
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        boolean heightRestricted = false;
+        int unrestrictedImageDimensionLength;
+        if((double) imageHeight/imageWidth > (double) screenDimensions[1]/screenDimensions[0]) {
+            heightRestricted = true;
+            unrestrictedImageDimensionLength = ((imageWidth * screenDimensions[1])/imageHeight);
         }
-        catch(Exception e) {
-            System.out.println("Failed to load menu Image");
-            return null;
-        }
+        else
+            unrestrictedImageDimensionLength = ((imageHeight * screenDimensions[0])/imageWidth);
+        
+        if(heightRestricted)
+            g.drawImage(image, (screenDimensions[0] - unrestrictedImageDimensionLength)/2, 0, unrestrictedImageDimensionLength, screenDimensions[1], null);
+        else
+            g.drawImage(image, 0, (screenDimensions[1] - unrestrictedImageDimensionLength)/2, screenDimensions[0], unrestrictedImageDimensionLength, null);
     }
+    
 }
