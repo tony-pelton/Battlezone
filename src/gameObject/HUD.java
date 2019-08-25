@@ -41,8 +41,8 @@ public class HUD implements Updatable {
         this.radarPosition = radarPosition;
         
         try {
-            crack = ImageIO.read(new File("./src/sprites/crack.png"));
-            life = ImageIO.read(new File("./src/sprites/life.png"));
+            crack = ImageIO.read(Class.class.getResourceAsStream("/sprites/crack.png"));
+            life = ImageIO.read(Class.class.getResourceAsStream("/sprites/life.png"));
         }
         catch(Exception e) {
             System.out.println("Unable to load images");
