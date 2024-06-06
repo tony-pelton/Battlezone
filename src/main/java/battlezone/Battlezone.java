@@ -157,7 +157,7 @@ public class Battlezone extends JFrame implements Runnable {
         retrives the high scores from the text document
         */
         try {
-            Scanner wanner = new Scanner(Class.class.getResourceAsStream("scores.txt"));
+            Scanner wanner = new Scanner(Battlezone.class.getClassLoader().getResourceAsStream("scores.txt"));
             String scores = "";
             while(wanner.hasNext()) {
                 scores += wanner.next() + " ";
