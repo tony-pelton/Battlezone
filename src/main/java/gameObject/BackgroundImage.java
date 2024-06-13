@@ -59,7 +59,7 @@ public class BackgroundImage implements Updatable {
         }
     }
     
-    public void update(double timePassed, Battlezone battlezone) {
+    public void update(double timePassed) {
         for(int i = 0; i < updating.size(); i++) {
             UpdatingBackgroundEntity e = updating.get(i);
             e.update(timePassed);
@@ -71,9 +71,10 @@ public class BackgroundImage implements Updatable {
         }
     }
     
-    public void drawBackground(Graphics g, double angle) {
+    public void drawBackground(double angle) {
         int position = (int)(width * ((Math.PI * 2) - (angle % (Math.PI * 2)))/(Math.PI * 2));
         double rightBound = position + screenDimensions[0];
+        Graphics g = Battlezone.getGraphicsSurface();
         g.setColor(Color.green);
         g.drawLine(0, screenDimensions[1]/2, screenDimensions[0], screenDimensions[1]/2);
         for(BackgroundEntity e : entities) {
@@ -92,13 +93,13 @@ public class BackgroundImage implements Updatable {
     }
     
     private interface BackgroundEntity {
-        public boolean withinBounds(double lowBound, double upperBound);
-        public void scale(double[] porportions);
-        public void draw(Graphics g, int translation, int vertShift);
+        boolean withinBounds(double lowBound, double upperBound);
+        void scale(double[] porportions);
+        void draw(Graphics g, int translation, int vertShift);
     }
     
     private interface UpdatingBackgroundEntity {
-        public void update(double timePassed);
+        void update(double timePassed);
     }
     
     private static class VolcanoParticle implements BackgroundEntity, UpdatingBackgroundEntity {

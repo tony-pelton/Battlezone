@@ -16,9 +16,8 @@ public class FreefallingDebris
   private double xAngVel;
   private double yAngVel;
   private double zAngVel;
-  private static final double GRAVITY = 30.0D;
-  
-  public static void explode(Battlezone battlezone, double[] position)
+
+  public static void explode(double[] position)
   {
     double maxVelocity = 40.0D;
     double maxAngVelocity = 10.0D;
@@ -35,7 +34,7 @@ public class FreefallingDebris
       velocity[4] = (Math.random() * maxAngVelocity * 2.0D - maxAngVelocity);
       velocity[5] = (Math.random() * maxAngVelocity * 2.0D - maxAngVelocity);
       FreefallingDebris p = new FreefallingDebris(position, velocity, ModelManager.getRandomDebrisModel(1.0D));
-      battlezone.addUpdatable(p);
+      Battlezone.getInstance().addUpdatable(p);
     }
   }
   
@@ -51,7 +50,7 @@ public class FreefallingDebris
     zAngVel = velocities[5];
   }
   
-  public void move(double timePassed, Battlezone battlezone)
+  public void move(double timePassed)
   {
     setX(getX() + xVel * timePassed);
     setY(getY() + yVel * timePassed);
@@ -62,7 +61,7 @@ public class FreefallingDebris
     yVel += 30.0D * timePassed;
     
     if (getY() > 0.0D) {
-      battlezone.removeUpdatable(this);
+      Battlezone.getInstance().removeUpdatable(this);
     }
   }
 }

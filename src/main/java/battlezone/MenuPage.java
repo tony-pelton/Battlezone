@@ -3,7 +3,6 @@
  */
 package battlezone;
 
-import java.awt.Graphics;
 /**
  *
  * @author macle
@@ -22,6 +21,6 @@ public abstract class MenuPage {
     
     public abstract int getStateChange(int keyPress);
     
-    public abstract void draw(Graphics g);
+    public abstract void draw();
     
 }

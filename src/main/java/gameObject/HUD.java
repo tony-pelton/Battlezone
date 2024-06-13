@@ -6,8 +6,6 @@ import java.awt.Graphics;
 import java.awt.Color;
 import battlezone.Battlezone;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
 import javax.imageio.ImageIO;
 import java.awt.Font;
 /**
@@ -24,11 +22,11 @@ public class HUD implements Updatable {
     private BufferedImage life;
     private Blip radarBlip;
     
-    int[] radarPosition;
-    double radarSize;
+    private final int[] radarPosition;
+    private final double radarSize;
     
-    int[] reticlePosition;
-    double reticleSize;
+    private final int[] reticlePosition;
+    private final double reticleSize;
     
     
     public HUD(double rotationSpeed, int[] radarPosition, double radarSize, int[] reticlePosition, double reticleSize) {
@@ -49,7 +47,9 @@ public class HUD implements Updatable {
         }
     }
     
-    public void draw(Graphics g, Battlezone battlezone, int[] screenDimensions) {
+    public void draw(int[] screenDimensions) {
+        Graphics g = Battlezone.getGraphicsSurface();
+        Battlezone battlezone = Battlezone.getInstance();
         if(battlezone.getPlayer().getDead()) {
             drawCrack(g, screenDimensions);
         }
@@ -62,7 +62,7 @@ public class HUD implements Updatable {
         drawLives(g, battlezone);
     }
     
-    public void drawScore(Graphics g, Battlezone battlezone, int screenWidth) {
+    private void drawScore(Graphics g, Battlezone battlezone, int screenWidth) {
         int score = battlezone.getScore();
         
         String s = "";
@@ -78,9 +78,14 @@ public class HUD implements Updatable {
         g.setColor(Color.GREEN);
         int stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 30);
+
+        s = String.format("time: %f", battlezone.getTimePassed());
+        stringWidth = g.getFontMetrics(font).stringWidth(s);
+        g.drawString(s, screenWidth - stringWidth - 20, 70);
+
     }
     
-    public void drawLives(Graphics g, Battlezone battlezone) {
+    private void drawLives(Graphics g, Battlezone battlezone) {
         int y = 30;
         int startX = 30;
         int imageWidth = 70;
@@ -94,7 +99,7 @@ public class HUD implements Updatable {
         
     }
     
-    public void drawCrack(Graphics g, int[] screenDimensions) {
+    private void drawCrack(Graphics g, int[] screenDimensions) {
         int size = screenDimensions[0];
         g.drawImage(crack, 0, (screenDimensions[1]/2) - size/2, size, size, null);
     }
@@ -185,7 +190,8 @@ public class HUD implements Updatable {
         return angleToTank;
     }
     
-    public void update(double timePassed, Battlezone battlezone) {
+    public void update(double timePassed) {
+        Battlezone battlezone = Battlezone.getInstance();
         if(battlezone.getPlayer().getDead())
             return;
         
@@ -240,11 +246,10 @@ public class HUD implements Updatable {
     }
     
     private static class Blip {
-        double x;
-        double y;
-        double alphaValue;
-        double porportionalRadius = 1.0/25;
-        double fadeSpeed;
+        private double x;
+        private double y;
+        private double alphaValue;
+        private final double fadeSpeed;
         
         public Blip(double x, double y, double alpha, double fade) {
             this.x = x;
@@ -266,7 +271,8 @@ public class HUD implements Updatable {
             if(alphaValue <= 0)
                 return;
             g.setColor(new Color(255, 0, 0, (int) alphaValue));
-            g.fillOval((int) ((x - porportionalRadius) * radius) + position[0], (int) -((y + porportionalRadius) * radius) + position[1], (int) (porportionalRadius  * 2 * radius), (int)(porportionalRadius  * radius * 2));
+            double porportionalRadius = 1.0 / 25;
+            g.fillOval((int) ((x - porportionalRadius) * radius) + position[0], (int) -((y + porportionalRadius) * radius) + position[1], (int) (porportionalRadius * 2 * radius), (int)(porportionalRadius * radius * 2));
         }
         
         public void fade(double time) {

@@ -8,12 +8,10 @@ import gameObject.*;
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.Color;
-import java.awt.GraphicsDevice;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import render.RenderManager;
 import java.awt.event.*;
-import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
 import java.io.File;
@@ -23,64 +21,75 @@ import java.util.StringTokenizer;
  * @author macle
  */
 public class Battlezone extends JFrame implements Runnable {
-    private Thread run;
+
+    private static final double ENEMY_RESPAWN_TIME = 2.5;
+    private static final double PLAYER_RESPAWN_TIME = 3;
+    private static final double MAP_RADIUS = 300;
+    private static final double OBSTACLE_OBSTRUCTION_RADIUS = 30;
+    private static final double TANK_OBSTRUCTION_RADIUS = 10;
+    private static final int NUMBER_OF_OBSTACLES = 15;
+    private static final double MENU_PAN_SPEED = 0.1;
+    private static final double MENU_VIEW_HEIGHT = -16;
+    private static final double MAX_MISSILE_PROBABILITY = 0.33;
+    private static final double MISSILE_PROBABILITY_SCALE_FACTOR = 0.35;
+
     private boolean running;
     private boolean w, s, i, k;
     private double fov;
+
     private ArrayList<Object3D> objects = new ArrayList<Object3D>();
     private ArrayList<Updatable> updatable = new ArrayList<Updatable>();
     private ArrayList<Updatable> toAddUpdatable = new ArrayList<Updatable>();
     private ArrayList<Updatable> toRemoveUpdatable = new ArrayList<Updatable>();
     private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
     private ArrayList<Tank> tanks = new ArrayList<Tank>();
+
     private PlayerTank player;
     private Enemy enemy;
     private HUD hud;
-    private double enemyRespawnTime = 2.5;
+
+    private static Battlezone battlezone;
+
     private double enemyRespawnCounter;
-    private double playerRespawnTime = 3;
     private double playerRespawnCounter;
-    private double mapRadius = 300;
-    private double obstacleObstructionRadius = 30;
-    private double tankObstructionRadius = 10;
-    private int numberOfObstacles = 15;
     private int score = 0;
     private int lives = 3;
+
+    private static Graphics graphics;
     private BackgroundImage backgroundImage;
-    private int state; //0 main menu, 1 in game, 2 guide page 1, 3 guide page 2, 4 guide page 3, 5 high scores, 6 game over/ add high score screen 
+
+    private int state; //0 main menu, 1 in game, 2 guide page 1, 3 guide page 2, 4 guide page 3, 5 high scores, 6 game over/ add high score screen
+    private int requestedStateChange = -1;
+
     private MenuPage[] menuPages;
     private double menuPanAngle;
-    private int requestedStateChange = -1;
-    private double menuPanSpeed = 0.1;
-    private double menuViewHeight = -16;
-    private double maxMissileProbability = 0.33;
-    private double missileProbabilityScaleFactor = 0.35;
-    
+
+    private double timePassed = 0.0;
+
     public Battlezone() {
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice gd = ge.getDefaultScreenDevice();
+//        GraphicsDevice gd = ge.getDefaultScreenDevice();
 //        setUndecorated(true);
         this.setResizable(false);
         this.resize(1600, 900);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 //        gd.setFullScreenWindow(this);
         setVisible(true);
-        Battlezone b = this;
-        
+
         createMenus();
         state = -1;
         changeState(0);
-        
-        
+
+
         fov = (getWidth()/2.0) * Math.sqrt(3);
         this.addKeyListener(new KeyAdapter() {
-            
+
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     running = false;
                     System.exit(0);
                 }
-                
+
                 if(state == 1) {
                     switch(e.getKeyCode()) {
                         case KeyEvent.VK_W:
@@ -96,17 +105,17 @@ public class Battlezone extends JFrame implements Runnable {
                             i = true;
                             break;
                         case KeyEvent.VK_SPACE:
-                            player.tryToFire(b);
+                            player.tryToFire();
                             break;
                     }
                 }
                 else {
                     if(state == 5)
-                        ((WriteHighScorePage)menuPages[5]).enterHighScore(e.getKeyCode(), b);
+                        ((WriteHighScorePage)menuPages[5]).enterHighScore(e.getKeyCode());
                     requestedStateChange = menuPages[state].getStateChange(e.getKeyCode());
                 }
             }
-            
+
             public void keyReleased(KeyEvent e) {
                 switch(e.getKeyCode()) {
                     case KeyEvent.VK_W:
@@ -125,7 +134,15 @@ public class Battlezone extends JFrame implements Runnable {
             }
         });
     }
-    
+
+    public static Battlezone getInstance() {
+        return battlezone;
+    }
+
+    public double getTimePassed() {
+        return timePassed;
+    }
+
     public void saveScore() {
         /*
             gets the current high scores from a text file, finds where the current score belongs and rewrites the file with the new score
@@ -217,12 +234,16 @@ public class Battlezone extends JFrame implements Runnable {
     }
     
     public double getMapRadius() {
-        return mapRadius;
+        return MAP_RADIUS;
     }
     
     public void start() {
         running = true;
-        run = new Thread(this);
+        Thread run = new Thread(this);
+        run.setUncaughtExceptionHandler((t, e) -> {
+            e.printStackTrace(System.err);
+            System.exit(1);
+        });
         run.start();
     }
     
@@ -276,7 +297,7 @@ public class Battlezone extends JFrame implements Runnable {
             if(!(updatable.get(i) instanceof TankShell))
                 continue;
             TankShell shell = (TankShell) updatable.get(i);
-            if(Math.pow(shell.getX() - player.getX(), 2) + Math.pow(shell.getZ() - player.getZ(), 2) > Math.pow(mapRadius, 2))
+            if(Math.pow(shell.getX() - player.getX(), 2) + Math.pow(shell.getZ() - player.getZ(), 2) > Math.pow(MAP_RADIUS, 2))
                 removeUpdatable(shell);
         }
     }
@@ -294,7 +315,7 @@ public class Battlezone extends JFrame implements Runnable {
             playerZ = 0;
         }
         
-        if(enemy == null || (enemy instanceof Missile && !((Missile)enemy).getInitiallyLanded()) || Math.pow(enemy.getX() - playerX, 2) + Math.pow(enemy.getZ() - playerZ, 2) <= Math.pow(mapRadius, 2))
+        if(enemy == null || (enemy instanceof Missile && !((Missile)enemy).getInitiallyLanded()) || Math.pow(enemy.getX() - playerX, 2) + Math.pow(enemy.getZ() - playerZ, 2) <= Math.pow(MAP_RADIUS, 2))
            return;
         
         removeUpdatable((Updatable) enemy);
@@ -308,18 +329,18 @@ public class Battlezone extends JFrame implements Runnable {
     private void replaceOutOfBoundsObstacles() {
         for(int i = 0; i < obstacles.size(); i++) {
             Obstacle o = obstacles.get(i);
-            if(Math.pow(o.getX() - player.getX(), 2) + Math.pow(o.getZ() - player.getZ(), 2) <= Math.pow(mapRadius, 2))
+            if(Math.pow(o.getX() - player.getX(), 2) + Math.pow(o.getZ() - player.getZ(), 2) <= Math.pow(MAP_RADIUS, 2))
                 continue;
             
             do {
                 double angle = player.getYRot() + (Math.random() * Math.PI);
                 if(player.getTrack1() == -1 || player.getTrack2() == -1)
                     angle += Math.PI;
-                double randomX = player.getX() + (Math.cos(angle) * mapRadius);
-                double randomZ = player.getZ() + (Math.sin(angle) * mapRadius);
+                double randomX = player.getX() + (Math.cos(angle) * MAP_RADIUS);
+                double randomZ = player.getZ() + (Math.sin(angle) * MAP_RADIUS);
                 boolean fail = false;
                 for(Obstacle ob : obstacles) {
-                    if(Math.pow(randomX - ob.getX(), 2) + Math.pow(randomZ - ob.getZ(), 2) < Math.pow(obstacleObstructionRadius * 2, 2)) {
+                    if(Math.pow(randomX - ob.getX(), 2) + Math.pow(randomZ - ob.getZ(), 2) < Math.pow(OBSTACLE_OBSTRUCTION_RADIUS * 2, 2)) {
                         fail = true;
                         break;
                     }
@@ -358,7 +379,7 @@ public class Battlezone extends JFrame implements Runnable {
         addUpdatable(player);
         hud = new HUD(4, new int[] {getWidth()/2, getHeight()/6}, getHeight() * 80.0/900, new int[] {getWidth()/2, getHeight()/2}, getHeight() * 100.0/900);
         addUpdatable(hud);
-        addObstaclesRandomLocation(numberOfObstacles);
+        addObstaclesRandomLocation(NUMBER_OF_OBSTACLES);
         addEnemy();
         backgroundImage = new BackgroundImage(new int[] {getWidth(), getHeight()});
         updatable.add(backgroundImage);
@@ -366,7 +387,7 @@ public class Battlezone extends JFrame implements Runnable {
     
     private void resetNonPlayerEnteties() {
         clearEntities();
-        addObstaclesRandomLocation(numberOfObstacles);
+        addObstaclesRandomLocation(NUMBER_OF_OBSTACLES);
         addTank();
         backgroundImage = new BackgroundImage(new int[] {getWidth(), getHeight()});
         updatable.add(backgroundImage);
@@ -396,7 +417,7 @@ public class Battlezone extends JFrame implements Runnable {
             }
         }
         else if(player.getDead()) {
-            playerRespawnCounter = playerRespawnTime;
+            playerRespawnCounter = PLAYER_RESPAWN_TIME;
         }
         
         if(enemyRespawnCounter > 0) {
@@ -408,14 +429,14 @@ public class Battlezone extends JFrame implements Runnable {
             score += 1000;
             if(enemy instanceof Missile)
                 score += 500;
-            enemyRespawnCounter = enemyRespawnTime;
+            enemyRespawnCounter = ENEMY_RESPAWN_TIME;
         }
         
     }
     
     private void addObstaclesRandomLocation(int numObstacles) {
         for(int i = 0; i < numObstacles; i++) {
-            double[] pos = getRandomValidLocation(obstacleObstructionRadius, 1);
+            double[] pos = getRandomValidLocation(OBSTACLE_OBSTRUCTION_RADIUS, 1);
             double bulletHeight = -1;
             if(player != null)
                 bulletHeight = player.getBulletHeight();
@@ -425,7 +446,7 @@ public class Battlezone extends JFrame implements Runnable {
     }
     
     private double[] getRandomValidLocation(double objectObstruction, double mapRatio) {
-        double mapRadius = this.mapRadius * mapRatio;
+        double mapRadius = this.MAP_RADIUS * mapRatio;
         while(true) {
             double playerX;
             double playerZ;
@@ -445,13 +466,13 @@ public class Battlezone extends JFrame implements Runnable {
                 continue;
             
             
-            if(Math.pow(randomX - playerX, 2) + Math.pow(randomZ - playerZ, 2) < Math.pow(tankObstructionRadius + objectObstruction, 2)) 
+            if(Math.pow(randomX - playerX, 2) + Math.pow(randomZ - playerZ, 2) < Math.pow(TANK_OBSTRUCTION_RADIUS + objectObstruction, 2))
                 continue;
             
             
             boolean fail = false;
             for(Obstacle o : obstacles) {
-                if(Math.pow(randomX - o.getX(), 2) + Math.pow(randomZ - o.getZ(), 2) < Math.pow(obstacleObstructionRadius + objectObstruction, 2)) {
+                if(Math.pow(randomX - o.getX(), 2) + Math.pow(randomZ - o.getZ(), 2) < Math.pow(OBSTACLE_OBSTRUCTION_RADIUS + objectObstruction, 2)) {
                     fail = true;
                     break;
                 }
@@ -465,7 +486,7 @@ public class Battlezone extends JFrame implements Runnable {
     }
     
     private void addTank() {
-        double[] pos = getRandomValidLocation(tankObstructionRadius, 3.0/4);
+        double[] pos = getRandomValidLocation(TANK_OBSTRUCTION_RADIUS, 3.0/4);
         if(player == null) {
             enemy = new EnemyTank(new double[] {pos[0], 0, pos[1], 0, Math.PI * 2 * Math.random(), 0}, 10, -1);
             addUpdatable((Updatable) enemy);
@@ -486,7 +507,7 @@ public class Battlezone extends JFrame implements Runnable {
             }
 
             double angleToTank = -(Math.PI/2) + ((Tank) enemy).getAngleToTank(player);
-
+            // TODO += is postfix, so angleToTank is effectively unused
             enemy.setYRot(angleToTank += enemyAngle);
         }
         else
@@ -502,7 +523,7 @@ public class Battlezone extends JFrame implements Runnable {
         else
             playerAngle = player.getYRot() + Math.PI/2;
         
-        enemy = new Missile(new double[] {player.getX() + (Math.cos(playerAngle) * mapRadius), -80, player.getZ() + (Math.sin(playerAngle) * mapRadius), 0, playerAngle + Math.PI/2, 0}, 5);
+        enemy = new Missile(new double[] {player.getX() + (Math.cos(playerAngle) * MAP_RADIUS), -80, player.getZ() + (Math.sin(playerAngle) * MAP_RADIUS), 0, playerAngle + Math.PI/2, 0}, 5);
         addUpdatable((Updatable) enemy);
     }
     
@@ -510,9 +531,9 @@ public class Battlezone extends JFrame implements Runnable {
         if(player == null)
             return;
         
-        double missileProbability = maxMissileProbability * (score/1000.0) * missileProbabilityScaleFactor;
-        if(missileProbability > maxMissileProbability)
-            missileProbability = maxMissileProbability;
+        double missileProbability = MAX_MISSILE_PROBABILITY * (score/1000.0) * MISSILE_PROBABILITY_SCALE_FACTOR;
+        if(missileProbability > MAX_MISSILE_PROBABILITY)
+            missileProbability = MAX_MISSILE_PROBABILITY;
         
         if(Math.random() <= missileProbability)
             addMissile();
@@ -569,7 +590,7 @@ public class Battlezone extends JFrame implements Runnable {
         return player;
     }
     
-    public void gameUpdate(double timePassed) {
+    private void gameUpdate(double timePassed) {
         if(w && !s) 
             player.setTrack2(1);
         else if(s && !w) 
@@ -585,7 +606,7 @@ public class Battlezone extends JFrame implements Runnable {
             player.setTrack1(0);
         
         for(Updatable toUpdate : updatable) 
-            toUpdate.update(timePassed, this);
+            toUpdate.update(timePassed);
         
         addUpdatables();
         removeUpdatables();
@@ -594,59 +615,57 @@ public class Battlezone extends JFrame implements Runnable {
         removeOutOfBoundsShells();
     }
     
-    public void menuUpdate(double timePassed) {
-        menuPanAngle += menuPanSpeed * timePassed;
+    private void menuUpdate(double timePassed) {
+        menuPanAngle += MENU_PAN_SPEED * timePassed;
         
         for(Updatable toUpdate : updatable) 
-            toUpdate.update(timePassed, this);
+            toUpdate.update(timePassed);
         
         addUpdatables();
         removeUpdatables();
         replaceOutOfBoundsEnemy();
     }
     
-    private void gameRender(Graphics g) {
-        BufferedImage render = RenderManager.createRender(objects, new double[] {player.getX(),player.getBulletHeight() - 0.125, player.getZ() - 0.001}, new double[]{player.getXRot(), player.getYRot()}, fov, new int[] {getWidth(), getHeight()});
-        g.drawImage(render, 0, 0, null);
-        backgroundImage.drawBackground(g, player.getYRot());
-        hud.draw(g, this, new int[] {getWidth(), getHeight()});
+    private void gameRender() {
+        RenderManager.renderObjects(objects, new double[] {player.getX(),player.getBulletHeight() - 0.125, player.getZ() - 0.001}, new double[]{player.getXRot(), player.getYRot()}, fov, new int[] {getWidth(), getHeight()});
+        backgroundImage.drawBackground(player.getYRot());
+        hud.draw(new int[] {getWidth(), getHeight()});
     }
     
-    private void menuRender(Graphics g) {
-        BufferedImage render = RenderManager.createRender(objects, new double[] {0,menuViewHeight, 0}, new double[]{0, menuPanAngle}, fov, new int[] {getWidth(), getHeight()});
-        g.drawImage(render, 0, 0, null);
-        backgroundImage.drawBackground(g, menuPanAngle);
+    private void menuRender() {
+        RenderManager.renderObjects(objects, new double[] {0, MENU_VIEW_HEIGHT, 0}, new double[]{0, menuPanAngle}, fov, new int[] {getWidth(), getHeight()});
+        backgroundImage.drawBackground(menuPanAngle);
         if(state == 5)
-            ((WriteHighScorePage)menuPages[5]).draw(g, score);
+            ((WriteHighScorePage)menuPages[5]).draw(score);
         if(state == 6)
-            ((ViewHighScorePage)menuPages[6]).draw(g, this);
-        menuPages[state].draw(g);
+            ((ViewHighScorePage)menuPages[6]).draw();
+        menuPages[state].draw();
         
     }
-    
+
+    public static Graphics getGraphicsSurface() {
+        return graphics;
+    }
+
     private void render() {
         
         BufferedImage doubleBuffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics g = doubleBuffer.getGraphics();
-        g.setColor(Color.black);
-        g.fillRect(0, 0, getWidth(), getHeight());
-        
-        
+        graphics = doubleBuffer.getGraphics();
+        graphics.setColor(Color.black);
+        graphics.fillRect(0, 0, getWidth(), getHeight());
+
         if(state == 1) 
-            gameRender(g);
+            gameRender();
         else 
-            menuRender(g);
+            menuRender();
 
         getGraphics().drawImage(doubleBuffer, 0, 0, null);
-        try {
-        Thread.sleep(5);
-        }
-        catch (Exception e) {}
+
     }
 
     public static void main(String[] args) {
-        Battlezone b = new Battlezone();
-        b.start();
+        battlezone = new Battlezone();
+        battlezone.start();
     }
     
 }

@@ -9,6 +9,9 @@ import java.util.ArrayList;
  * @author macle
  */
 public class ModelManager {
+
+    private ModelManager() {}
+
     private static double[][] missileModel = new double[][] {
         {3, 0, 3}, {3, 0, -2}, {-3, 0, -2}, {-3, 0, 3},
         {1, -3.375, 1}, {1, -3, -1}, {-1, -3, -1}, {-1, -3.375, 1},

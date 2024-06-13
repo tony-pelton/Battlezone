@@ -12,11 +12,11 @@ import java.awt.event.KeyEvent;
  * @author macle
  */
 public class WriteHighScorePage extends MenuPage {
-    int[] nameChars = new int[] {65, 65, 65};
-    int charIndex;
-    boolean letterFlicker = false;
-    double flickerTime = 0.45;
-    double flickerCounter = flickerTime;
+    private final int[] nameChars = new int[] {65, 65, 65};
+    private int charIndex;
+    private boolean letterFlicker = false;
+    private final double flickerTime = 0.45;
+    private double flickerCounter = flickerTime;
     
     public WriteHighScorePage(int[] screenDimensions) {
         super(screenDimensions);
@@ -31,7 +31,7 @@ public class WriteHighScorePage extends MenuPage {
         return -1;
     }
     
-    public void enterHighScore(int keyPressed, Battlezone battlezone) {
+    public void enterHighScore(int keyPressed) {
         switch(keyPressed) {
             case KeyEvent.VK_LEFT:
                 charIndex--;
@@ -58,12 +58,13 @@ public class WriteHighScorePage extends MenuPage {
                 }
                 break;
             case KeyEvent.VK_ENTER:
-                battlezone.saveScore();
+                Battlezone.getInstance().saveScore();
         }
     }
     
-    private void writeCenteredText(String message, int size, int x, int y, Graphics g, boolean typeWriter) {
+    private void writeCenteredText(String message, int size, int x, int y, boolean typeWriter) {
         Font font;
+        Graphics g = Battlezone.getGraphicsSurface();
         if(typeWriter)
             font = new Font(Font.MONOSPACED, Font.PLAIN, size);
         else 
@@ -82,17 +83,18 @@ public class WriteHighScorePage extends MenuPage {
         }
     }
     
-    public void draw(Graphics g){}
+    public void draw(){}
     
-    public void draw(Graphics g, int score) {
+    public void draw(int score) {
         int textSize = 30;
         double pWidth = getScreenDimensions()[0];
         double pHeight = getScreenDimensions()[1];
+        Graphics g = Battlezone.getGraphicsSurface();
         g.setColor(Color.green);
-        writeCenteredText("Congrats, your score of " + score + " is high enough to be on the top 5", textSize, (int)pWidth/2, (int)pHeight * 1/8, g, false);
+        writeCenteredText("Congrats, your score of " + score + " is high enough to be on the top 5", textSize, (int)pWidth/2, (int)pHeight * 1/8, false);
         textSize = 20;
-        writeCenteredText("Use arrow keys to enter the name for the score to be saved with", textSize, (int)pWidth/2, (int)pHeight * 2/8, g, false);
-        writeCenteredText("Hit enter to save, or space to not save", textSize, (int)pWidth/2, (int)pHeight * 3/16, g, false);
+        writeCenteredText("Use arrow keys to enter the name for the score to be saved with", textSize, (int)pWidth/2, (int)pHeight * 2/8, false);
+        writeCenteredText("Hit enter to save, or space to not save", textSize, (int)pWidth/2, (int)pHeight * 3/16, false);
         textSize = 160;
         char[] chars = new char[3];
         for(int i = 0; i < 3; i++) {
@@ -105,8 +107,8 @@ public class WriteHighScorePage extends MenuPage {
             }
             chars[i] = c;
         }
-        writeCenteredText(chars[0] + "  " + chars[1] + "  " + chars[2], textSize, (int)pWidth/2, (int)(pHeight * 5/8) - 10, g, true);
-        writeCenteredText("_  _  _", textSize, (int)pWidth/2, (int)(pHeight) * 5/8, g, true);
+        writeCenteredText(chars[0] + "  " + chars[1] + "  " + chars[2], textSize, (int)pWidth/2, (int)(pHeight * 5/8) - 10, true);
+        writeCenteredText("_  _  _", textSize, (int)pWidth/2, (int)(pHeight) * 5/8, true);
     }
     
     public int[] getNameChars() {

@@ -24,7 +24,7 @@ public class Tank extends MovingObject {
   private double shellSize = 0.3;
   private double shootCooldown = 2.5;
   private double shootCooldownCounter = 0;
-  public Hitbox forwardCollisionLine;
+  private Hitbox forwardCollisionLine;
   private Hitbox reverseCollisionLine;
   private boolean dead = false;
   
@@ -97,9 +97,9 @@ public class Tank extends MovingObject {
   
   protected void bumpedObstacle(Obstacle o) {}
   
-  public void tryToFire(Battlezone battlezone) {
+  public void tryToFire() {
     if (!dead && shootCooldownCounter <= 0.0D) {
-      shoot(battlezone);
+      shoot();
       shootCooldownCounter = shootCooldown;
     }
   }
@@ -108,14 +108,14 @@ public class Tank extends MovingObject {
     return shootCooldownCounter > 0.0D;
   }
   
-  private void shoot(Battlezone battlezone) {
+  private void shoot() {
     double[] position = { getX() + shellPoint.getZ() * Math.cos(getYRot() + 1.5707963267948966D), shellPoint.getY(), getZ() + shellPoint.getZ() * Math.sin(getYRot() + 1.5707963267948966D), getXRot(), getYRot(), getZRot() };
     TankShell shell = new TankShell(position, ModelManager.getShellModel(shellSize), this instanceof PlayerTank);
-    battlezone.addUpdatable(shell);
+    Battlezone.getInstance().addUpdatable(shell);
   }
   
-  public void update(double timePassed, Battlezone battlezone) {
-    super.update(timePassed, battlezone);
+  public void update(double timePassed) {
+    super.update(timePassed);
     if (shootCooldownCounter > 0.0D)
       shootCooldownCounter -= timePassed;
   }
@@ -144,11 +144,12 @@ public class Tank extends MovingObject {
       return new double[] {clockwiseDist, Math.PI * 2 - clockwiseDist}; 
   }
   
-  protected void move(double timePassed, Battlezone battlezone) {
+  protected void move(double timePassed) {
     double oneTrackBonus = 1.0D;
     if ((track1 == 0) || (track2 == 0)) {
       oneTrackBonus = 1.5D;
     }
+    Battlezone battlezone = Battlezone.getInstance();
     ArrayList<Obstacle> obstacles = battlezone.getObstacles();
     double moveValue = trackMoveValue * oneTrackBonus * (track1 + track2);
     boolean forwardCollision = false;
@@ -179,7 +180,7 @@ public class Tank extends MovingObject {
     }
     if (((moveValue > 0.0D) && (!forwardCollision)) || ((moveValue < 0.0D) && (!reverseCollision))) {
       setVelocity(moveValue);
-      super.move(timePassed, battlezone);
+      super.move(timePassed);
     }
     rotate(new double[] { 0.0D, trackTurnValue * (track1 - track2), 0.0D }, timePassed);
     setDirectionToAngle();

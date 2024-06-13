@@ -9,9 +9,9 @@ package gameObject;
  * @author macle
  */
 public interface Enemy {
-    public double getX();
-    public double getZ();
-    public boolean getDead();
-    public void setYRot(double d);
-    public void setDead(boolean b);
+    double getX();
+    double getZ();
+    boolean getDead();
+    void setYRot(double d);
+    void setDead(boolean b);
 }

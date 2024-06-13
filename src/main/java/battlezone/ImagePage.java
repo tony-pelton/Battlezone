@@ -3,7 +3,6 @@
  */
 package battlezone;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /**
@@ -22,7 +21,7 @@ public  abstract class ImagePage extends MenuPage {
     
     public abstract int getStateChange(int keyPress);
     
-    public void draw(Graphics g) {
+    public void draw() {
         int[] screenDimensions = getScreenDimensions();
         int imageWidth = image.getWidth();
         int imageHeight = image.getHeight();
@@ -36,9 +35,9 @@ public  abstract class ImagePage extends MenuPage {
             unrestrictedImageDimensionLength = ((imageHeight * screenDimensions[0])/imageWidth);
         
         if(heightRestricted)
-            g.drawImage(image, (screenDimensions[0] - unrestrictedImageDimensionLength)/2, 0, unrestrictedImageDimensionLength, screenDimensions[1], null);
+            Battlezone.getGraphicsSurface().drawImage(image, (screenDimensions[0] - unrestrictedImageDimensionLength)/2, 0, unrestrictedImageDimensionLength, screenDimensions[1], null);
         else
-            g.drawImage(image, 0, (screenDimensions[1] - unrestrictedImageDimensionLength)/2, screenDimensions[0], unrestrictedImageDimensionLength, null);
+            Battlezone.getGraphicsSurface().drawImage(image, 0, (screenDimensions[1] - unrestrictedImageDimensionLength)/2, screenDimensions[0], unrestrictedImageDimensionLength, null);
     }
     
 }

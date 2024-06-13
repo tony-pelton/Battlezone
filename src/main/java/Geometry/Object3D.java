@@ -3,7 +3,8 @@
  */
 package Geometry;
 import Matrix.Matrix;
-import java.util.ArrayList;
+import battlezone.Battlezone;
+
 import java.awt.*;
 /**
  *
@@ -166,7 +167,8 @@ public class Object3D {
         return new Matrix(content);
     }
     
-    public void drawLine(int[] line, Point[] points, Graphics g, double fov, int[] screenDimensions) {
+    public void drawLine(int[] line, Point[] points, double fov, int[] screenDimensions) {
+        Graphics g = Battlezone.getGraphicsSurface();
         g.setColor(Color.green);
         Point p1 = points[line[0]];
         Point p2 = points[line[1]];
@@ -187,15 +189,15 @@ public class Object3D {
         }
     }
     
-    public void drawPoint(Point p1, Graphics g, int radius, double fov, int[] screenDimensions) {
+    public void drawPoint(Point p1, int radius, double fov, int[] screenDimensions) {
         if(p1.getZ() <= 0)
             return;
         int[] drawP1 = new int[] {(int) (p1.getX() * fov/p1.getZ()) + screenDimensions[0]/2, (int) (p1.getY() * fov/p1.getZ()) + screenDimensions[1]/2};
-        g.setColor(Color.GREEN);
-        g.fillOval(drawP1[0] - radius, drawP1[1] - radius, radius * 2, radius * 2);
+        Battlezone.getGraphicsSurface().setColor(Color.GREEN);
+        Battlezone.getGraphicsSurface().fillOval(drawP1[0] - radius, drawP1[1] - radius, radius * 2, radius * 2);
     }
     
-    public void draw(Graphics g, Matrix transformationMatrix, double fov, int[] screenDimensions) {
+    public void draw(Matrix transformationMatrix, double fov, int[] screenDimensions) {
         Point[] copyOfPoints = getCopyOfPoints();
         //gets points relative to model 
         transformPointsToWorldPos(copyOfPoints);
@@ -205,7 +207,7 @@ public class Object3D {
         
         //draws the lines with the points
         for(int[] line : lines)
-            drawLine(line, copyOfPoints, g, fov, screenDimensions);
+            drawLine(line, copyOfPoints, fov, screenDimensions);
     }
     
 }

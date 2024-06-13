@@ -29,9 +29,10 @@ public class Missile extends MovingObject implements Enemy{
         super(position, ModelManager.getMissileModel(scale), 80, new double[] {0, position[4]});
     }
     
-    private void initializeWaypoints(Battlezone battlezone) {
+    private void initializeWaypoints() {
         waypoints = new ArrayList<double[]>();
         double previousY = 0;
+        Battlezone battlezone = Battlezone.getInstance();
         for(int i = 0; i < numWaypoints; i++) {
             double x = battlezone.getMapRadius() * (i + 1)/(numWaypoints + 1);
             double y = ((Math.random() * 2 * maxDivertDistance) - maxDivertDistance);
@@ -75,13 +76,13 @@ public class Missile extends MovingObject implements Enemy{
         return Math.pow(p[0] - getX(), 2) + Math.pow(p[1] - getZ(), 2);
     }
     
-    private void checkForWaypointAchieved(double timePassed, Battlezone battlezone) {
+    private void checkForWaypointAchieved(double timePassed) {
         if(getSquaredDistToNextWaypoint() <= Math.pow(getVelocity() * timePassed, 2)) {
             waypoints.remove(0);
             if(waypoints.size() != 0)
                 setDirectionToNextWaypoint();
             else {
-                PlayerTank player = battlezone.getPlayer();
+                PlayerTank player = Battlezone.getInstance().getPlayer();
                 double angle = getAngleToPoint(new double[] {player.getX(), player.getZ()});
                 setDirection(new double[] {0, angle});
                 setYRot(angle - Math.PI/2);
@@ -90,12 +91,9 @@ public class Missile extends MovingObject implements Enemy{
         }
     }
     
-    private void trackPlayer(Battlezone battlezone, double timePassed) {
-        double[] angles = getAngularDistsToTank(battlezone.getPlayer());
-        if((angles[0] < angles[1] && angles[0] > Math.PI/2) || (angles[1] < angles[0] && angles[1] > Math.PI/2)) {
-            
-        }    
-        else if(angles[0] > angles[1])
+    private void trackPlayer(double timePassed) {
+        double[] angles = getAngularDistsToTank(Battlezone.getInstance().getPlayer());
+        if(angles[0] > angles[1])
             setDirection(new double[] {0, getDirection()[1] + (turnSpeed * timePassed)});
         else
             setDirection(new double[] {0, getDirection()[1] - (turnSpeed * timePassed)});
@@ -110,13 +108,13 @@ public class Missile extends MovingObject implements Enemy{
       return new double[] {clockwiseDist, Math.PI * 2 - clockwiseDist}; 
   }
     
-    private void missileLogic(Battlezone battlezone, double timePassed) {
+    private void missileLogic(double timePassed) {
         if(waypoints == null)
-            initializeWaypoints(battlezone);       
+            initializeWaypoints();
         if(waypoints.size() != 0)
-            checkForWaypointAchieved(timePassed, battlezone);
+            checkForWaypointAchieved(timePassed);
         if(waypoints.size() == 0)
-            trackPlayer(battlezone, timePassed);
+            trackPlayer(timePassed);
                 
     }
     
@@ -137,14 +135,15 @@ public class Missile extends MovingObject implements Enemy{
     }
     
     public void update(double timePassed, Battlezone battlezone) {
-        super.update(timePassed, battlezone);
-        missileLogic(battlezone, timePassed);
+        super.update(timePassed);
+        missileLogic(timePassed);
     }
     
-    public void move(double timePassed, Battlezone battlezone) {
+    public void move(double timePassed) {
+        Battlezone battlezone = Battlezone.getInstance();
         ArrayList<Obstacle> obstacles = battlezone.getObstacles();
         PlayerTank player = battlezone.getPlayer();
-        super.move(timePassed, battlezone);
+        super.move(timePassed);
         
         if(!initiallyLanded) {
             midAir = getY() < Obstacle.getObstacleHeight();
@@ -180,7 +179,7 @@ public class Missile extends MovingObject implements Enemy{
         
         
         if(player != null && player.collisionBoxCollision(getCollisionBox())) {
-            FreefallingDebris.explode(battlezone, getPosition());
+            FreefallingDebris.explode(getPosition());
             player.setDead(true);
             battlezone.removeUpdatable((Updatable) player);
 

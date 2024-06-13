@@ -4,7 +4,6 @@
 package gameObject;
 import Matrix.Matrix;
 import battlezone.Battlezone;
-import java.awt.Graphics;
 import Geometry.Point;
 /**
  *
@@ -13,7 +12,7 @@ import Geometry.Point;
 public class PointDebris extends MovingObject { 
     private double lifeTimeLeft;
     
-    public static void explode(Battlezone battlezone, double[] position) {
+    public static void explode(double[] position) {
         double maxVelocity = 20;
         double life = 0.5;
         for(int i = 0; i < 25; i++) {
@@ -21,7 +20,7 @@ public class PointDebris extends MovingObject {
             pos[3] = Math.random() * 2 * Math.PI;
             pos[4] = Math.random() * 2 * Math.PI;
             PointDebris p = new PointDebris(pos, Math.random() * maxVelocity, life);
-            battlezone.addUpdatable(p);
+            Battlezone.getInstance().addUpdatable(p);
         }
     }
     
@@ -30,18 +29,18 @@ public class PointDebris extends MovingObject {
         lifeTimeLeft = time;
     }
     
-    public void draw(Graphics g, Matrix transformationMatrix, double fov, int[] screenDimensions) {
+    public void draw(Matrix transformationMatrix, double fov, int[] screenDimensions) {
         Point[] copyOfPoints = getCopyOfPoints();
         transformPointsToWorldPos(copyOfPoints);
         transformPoints(transformationMatrix, copyOfPoints);
-        drawPoint(copyOfPoints[0], g, 2, fov, screenDimensions);
+        drawPoint(copyOfPoints[0], 2, fov, screenDimensions);
     }
     
-    public void update(double timePassed, Battlezone battlezone) {
-        super.update(timePassed, battlezone);
+    public void update(double timePassed) {
+        super.update(timePassed);
         lifeTimeLeft -= timePassed;
         if(lifeTimeLeft <= 0) {
-            battlezone.removeUpdatable(this);
+            Battlezone.getInstance().removeUpdatable(this);
         }
     }
     

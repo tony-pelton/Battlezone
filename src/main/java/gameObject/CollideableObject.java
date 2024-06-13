@@ -5,10 +5,6 @@ package gameObject;
 import Geometry.Hitbox;
 import Geometry.Object3D;
 import Geometry.Point;
-import Matrix.Matrix;
-import java.awt.Graphics;
-import java.util.ArrayList;
-import battlezone.Battlezone;
 /**
  *
  * @author macle
@@ -61,14 +57,10 @@ public class CollideableObject extends Object3D implements Updatable {
         }
     }
     
-    public void update(double time, Battlezone battlezone) {
+    public void update(double time) {
         if(positionUpdate) {
             updateHitboxes();
         }
     }
-    
-    public void draw(Graphics g, Matrix transformationMatrix, double fov, int[] screenDimensions) {
-        super.draw(g, transformationMatrix, fov, screenDimensions);
-    }
-    
+
 }

@@ -42,13 +42,13 @@ public class EnemyTank extends Tank implements Enemy {
         }
     }
     
-    private void maneuverAfterBump(double timePassed, Battlezone battlezone) {
+    private void maneuverAfterBump(double timePassed) {
         if(remainingAngle > 0) {
             remainingAngle -= getTrackTurnValue() * timePassed;
             if(remainingAngle <= 0) {
                 double lineSlope = Math.tan(getYRot());
                 double tankB = (lineSlope * -getX()) + getZ();
-                PlayerTank p = battlezone.getPlayer();
+                PlayerTank p = Battlezone.getInstance().getPlayer();
                 if(p == null)
                     remainingDist = 0;
                 else {
@@ -64,9 +64,9 @@ public class EnemyTank extends Tank implements Enemy {
         }
     }
     
-    private void maneuverAndAttack(Battlezone battlezone, double timePassed) {
+    private void maneuverAndAttack(double timePassed) {
         
-        PlayerTank player = battlezone.getPlayer();
+        PlayerTank player = Battlezone.getInstance().getPlayer();
         if(player == null) {
             setTrack1(1);
             setTrack2(1);
@@ -87,7 +87,7 @@ public class EnemyTank extends Tank implements Enemy {
         double acceptableFireAngle = Math.atan(player.getMinCrossection()/playerDist);
         
         if(clockwiseDist <= acceptableFireAngle/2 || counterDist <= acceptableFireAngle/2) {
-            tryToFire(battlezone);
+            tryToFire();
         }
         
         if(clockwiseDist <= getTrackTurnValue() * timePassed || counterDist <= getTrackTurnValue() * timePassed) {
@@ -114,14 +114,14 @@ public class EnemyTank extends Tank implements Enemy {
         
     }
     
-    public void update(double timePassed, Battlezone battlezone) {
+    public void update(double timePassed) {
         if(remainingDist > 0 || remainingAngle > 0) {
-            maneuverAfterBump(timePassed, battlezone);
+            maneuverAfterBump(timePassed);
         }
         else {
-            maneuverAndAttack(battlezone, timePassed);
+            maneuverAndAttack(timePassed);
         }
-        super.update(timePassed, battlezone);
+        super.update(timePassed);
     }
     
 }

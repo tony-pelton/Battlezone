@@ -4,10 +4,6 @@
 package gameObject;
 
 import Geometry.Point;
-import Geometry.Hitbox;
-import Geometry.Object3D;
-import java.util.ArrayList;
-import battlezone.Battlezone;
 
 /**
  *
@@ -29,7 +25,7 @@ public class MovingObject extends CollideableObject {
         this.direction = direction;
     }
     
-    protected void move(double timePassed, Battlezone battlezone) {
+    protected void move(double timePassed) {
         double magnitude = velocity * timePassed;
         
         double yComp = magnitude * Math.sin(direction[0]);
@@ -44,7 +40,7 @@ public class MovingObject extends CollideableObject {
         
     }
     
-    public void rotate(double rotateVals[], double time) {
+    public void rotate(double[] rotateVals, double time) {
         setXRot(getXRot() + (rotateVals[0] * time));
         setYRot(getYRot() + (rotateVals[1] * time));
         setZRot(getZRot() + (rotateVals[2] * time));
@@ -70,8 +66,8 @@ public class MovingObject extends CollideableObject {
         direction = d;
     }
     
-    public void update(double time, Battlezone battlezone) {
-        super.update(time, battlezone);
-        move(time, battlezone);
+    public void update(double time) {
+        super.update(time);
+        move(time);
     }
 }

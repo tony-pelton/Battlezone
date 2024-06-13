@@ -22,7 +22,7 @@ public class Matrix {
     }
     
     public Matrix(double[][] content) {
-        if(!Matrix.checkContentValid(content))
+        if(!checkContentValid(content))
             throw new IllegalArgumentException("Content either does not have even rows or is empty");
         this.content = content;
     }

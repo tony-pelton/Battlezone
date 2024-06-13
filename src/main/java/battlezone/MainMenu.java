@@ -4,8 +4,6 @@
 package battlezone;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileReader;
 import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
 

@@ -24,8 +24,6 @@ public class ViewHighScorePage extends MenuPage {
         return -1;
     }
     
-    public void draw(Graphics g){}
-    
     private void writeCenteredText(String message, int size, int x, int y, Graphics g) {
         Font font = new Font("Futura", Font.PLAIN, size);
         int Y = (y);
@@ -43,14 +41,16 @@ public class ViewHighScorePage extends MenuPage {
         return ray;
     }
     
-    public void draw(Graphics g, Battlezone battlezone) {
+    public void draw() {
         int textSize = 60;
         double pWidth = getScreenDimensions()[0];
         double pHeight = getScreenDimensions()[1];
+        Graphics g = Battlezone.getGraphicsSurface();
         g.setColor(Color.green);
         writeCenteredText("High Scores:", textSize, (int)pWidth/2, (int)pHeight * 1/8, g);
         textSize = 40;
         try {
+            Battlezone battlezone = Battlezone.getInstance();
             String[] scores = makeScoresDisplayable(battlezone.getHighScores(), battlezone);
             for(int i = 0; i < scores.length; i++) {
                 writeCenteredText(scores[i], textSize, (int)pWidth/2, (int)pHeight * (2 + i)/8, g);

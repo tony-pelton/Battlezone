@@ -10,7 +10,7 @@ import battlezone.Battlezone;
  * @author macle
  */
 public class TankShell extends MovingObject {
-    Point[] dragPoints;//used to pull the hitbox out to the distance the shell travels each time.
+    private final Point[] dragPoints;//used to pull the hitbox out to the distance the shell travels each time.
     //this avoids the shell simply passing through something if it goes to fast
     private boolean friendly;
     
@@ -22,9 +22,10 @@ public class TankShell extends MovingObject {
         this.friendly = friendly;
     }
     
-    public void move(double timePassed, Battlezone battlezone) {
+    public void move(double timePassed) {
+        Battlezone battlezone = Battlezone.getInstance();
         ArrayList<Obstacle> obstacles = battlezone.getObstacles();
-        super.move(timePassed, battlezone);
+        super.move(timePassed);
         dragPoints[0].set(new double[] {dragPoints[0].getX(), dragPoints[0].getY(), -getVelocity() * timePassed});
         dragPoints[1].set(new double[] {dragPoints[1].getX(), dragPoints[1].getY(), -getVelocity() * timePassed});
         
@@ -42,7 +43,7 @@ public class TankShell extends MovingObject {
             t = (CollideableObject) battlezone.getPlayer();
                     
         if(t != null && t.bulletBoxCollision(getCollisionBox())) {
-            FreefallingDebris.explode(battlezone, getPosition());
+            FreefallingDebris.explode(getPosition());
             if(friendly)
                 ((Enemy)t).setDead(true);
             else
@@ -52,7 +53,7 @@ public class TankShell extends MovingObject {
         }
         
         if(collision) {
-            PointDebris.explode(battlezone, getPosition());
+            PointDebris.explode(getPosition());
             battlezone.removeUpdatable((Updatable) this);
         }
     }
