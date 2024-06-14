@@ -57,7 +57,7 @@ public class CollideableObject extends Object3D implements Updatable {
         }
     }
     
-    public void update(double time) {
+    public void update() {
         if(positionUpdate) {
             updateHitboxes();
         }

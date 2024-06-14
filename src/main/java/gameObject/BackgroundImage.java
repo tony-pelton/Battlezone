@@ -59,10 +59,10 @@ public class BackgroundImage implements Updatable {
         }
     }
     
-    public void update(double timePassed) {
+    public void update() {
         for(int i = 0; i < updating.size(); i++) {
             UpdatingBackgroundEntity e = updating.get(i);
-            e.update(timePassed);
+            e.update(Battlezone.getInstance().getDeltaTime());
             if(e instanceof VolcanoParticle && ((VolcanoParticle) e).getDead()) {
                 entities.remove(e);
                 updating.remove(i);

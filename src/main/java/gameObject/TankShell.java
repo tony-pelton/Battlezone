@@ -22,12 +22,12 @@ public class TankShell extends MovingObject {
         this.friendly = friendly;
     }
     
-    public void move(double timePassed) {
+    public void move() {
         Battlezone battlezone = Battlezone.getInstance();
         ArrayList<Obstacle> obstacles = battlezone.getObstacles();
-        super.move(timePassed);
-        dragPoints[0].set(new double[] {dragPoints[0].getX(), dragPoints[0].getY(), -getVelocity() * timePassed});
-        dragPoints[1].set(new double[] {dragPoints[1].getX(), dragPoints[1].getY(), -getVelocity() * timePassed});
+        super.move();
+        dragPoints[0].set(new double[] {dragPoints[0].getX(), dragPoints[0].getY(), -getVelocity() * battlezone.getDeltaTime()});
+        dragPoints[1].set(new double[] {dragPoints[1].getX(), dragPoints[1].getY(), -getVelocity() * battlezone.getDeltaTime()});
         
         boolean collision = false;
         for(Obstacle ob : obstacles) {

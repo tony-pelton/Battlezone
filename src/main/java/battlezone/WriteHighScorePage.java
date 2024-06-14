@@ -75,8 +75,8 @@ public class WriteHighScorePage extends MenuPage {
         g.drawString(message, X, Y);
     }
     
-    public void update(double timePassed) {
-        flickerCounter -= timePassed;
+    public void update() {
+        flickerCounter -= Battlezone.getInstance().getDeltaTime();
         if(flickerCounter <= 0) {
             letterFlicker = !letterFlicker;
             flickerCounter = flickerTime;

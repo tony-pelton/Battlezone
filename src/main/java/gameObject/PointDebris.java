@@ -36,9 +36,9 @@ public class PointDebris extends MovingObject {
         drawPoint(copyOfPoints[0], 2, fov, screenDimensions);
     }
     
-    public void update(double timePassed) {
-        super.update(timePassed);
-        lifeTimeLeft -= timePassed;
+    public void update() {
+        super.update();
+        lifeTimeLeft -= Battlezone.getInstance().getDeltaTime();
         if(lifeTimeLeft <= 0) {
             Battlezone.getInstance().removeUpdatable(this);
         }

@@ -4,6 +4,7 @@
 package gameObject;
 
 import Geometry.Point;
+import battlezone.Battlezone;
 
 /**
  *
@@ -25,8 +26,8 @@ public class MovingObject extends CollideableObject {
         this.direction = direction;
     }
     
-    protected void move(double timePassed) {
-        double magnitude = velocity * timePassed;
+    protected void move() {
+        double magnitude = velocity * Battlezone.getInstance().getDeltaTime();
         
         double yComp = magnitude * Math.sin(direction[0]);
         double xzComp = magnitude * Math.cos(direction[0]);
@@ -66,8 +67,8 @@ public class MovingObject extends CollideableObject {
         direction = d;
     }
     
-    public void update(double time) {
-        super.update(time);
-        move(time);
+    public void update() {
+        super.update();
+        move();
     }
 }

@@ -134,20 +134,20 @@ public class Missile extends MovingObject implements Enemy{
         return initiallyLanded;
     }
     
-    public void update(double timePassed, Battlezone battlezone) {
-        super.update(timePassed);
-        missileLogic(timePassed);
+    public void update() {
+        super.update();
+        missileLogic(Battlezone.getInstance().getDeltaTime());
     }
     
-    public void move(double timePassed) {
+    public void move() {
         Battlezone battlezone = Battlezone.getInstance();
         ArrayList<Obstacle> obstacles = battlezone.getObstacles();
         PlayerTank player = battlezone.getPlayer();
-        super.move(timePassed);
+        super.move();
         
         if(!initiallyLanded) {
             midAir = getY() < Obstacle.getObstacleHeight();
-            setY(getY() + fallSpeed * timePassed);
+            setY(getY() + fallSpeed * battlezone.getDeltaTime());
             if(getY() > 0) {
                 setY(0);
                 initiallyLanded = true;
@@ -163,14 +163,14 @@ public class Missile extends MovingObject implements Enemy{
             }
         }
         if(obstacleCollision) {
-            setY(getY() - (timePassed * verticleTraverseSpeed));
+            setY(getY() - (battlezone.getDeltaTime() * verticleTraverseSpeed));
             midAir = true;
             if(getY() < Obstacle.getObstacleHeight()) {
                 setY(Obstacle.getObstacleHeight());
             }
         }
         else {
-            setY(getY() + (timePassed * verticleTraverseSpeed));
+            setY(getY() + (battlezone.getDeltaTime() * verticleTraverseSpeed));
             if(getY() > 0) {
                 midAir = false;
                 setY(0);

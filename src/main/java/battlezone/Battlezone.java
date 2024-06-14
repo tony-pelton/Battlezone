@@ -2,12 +2,11 @@
  * File added by Nathan MacLeod 2019
  */
 package battlezone;
-import java.awt.GraphicsEnvironment;
+import java.awt.*;
+
 import Geometry.*;
 import gameObject.*;
 import javax.swing.*;
-import java.awt.Graphics;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import render.RenderManager;
@@ -20,7 +19,7 @@ import java.util.StringTokenizer;
  *
  * @author macle
  */
-public class Battlezone extends JFrame implements Runnable {
+public class Battlezone extends JFrame {
 
     private static final double ENEMY_RESPAWN_TIME = 2.5;
     private static final double PLAYER_RESPAWN_TIME = 3;
@@ -64,22 +63,23 @@ public class Battlezone extends JFrame implements Runnable {
     private MenuPage[] menuPages;
     private double menuPanAngle;
 
-    private double timePassed = 0.0;
+    private double deltaTime = 0.0;
 
     public Battlezone() {
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        GraphicsDevice gd = ge.getDefaultScreenDevice();
-//        setUndecorated(true);
-        this.setResizable(false);
-        this.resize(1600, 900);
+        setResizable(false);
+        setSize(1600,900);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-//        gd.setFullScreenWindow(this);
+        if (false) { // full screen
+            setUndecorated(true);
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice gd = ge.getDefaultScreenDevice();
+            gd.setFullScreenWindow(this);
+        }
         setVisible(true);
 
         createMenus();
         state = -1;
         changeState(0);
-
 
         fov = (getWidth()/2.0) * Math.sqrt(3);
         this.addKeyListener(new KeyAdapter() {
@@ -139,8 +139,8 @@ public class Battlezone extends JFrame implements Runnable {
         return battlezone;
     }
 
-    public double getTimePassed() {
-        return timePassed;
+    public double getDeltaTime() {
+        return deltaTime;
     }
 
     public void saveScore() {
@@ -237,23 +237,14 @@ public class Battlezone extends JFrame implements Runnable {
         return MAP_RADIUS;
     }
     
-    public void start() {
-        running = true;
-        Thread run = new Thread(this);
-        run.setUncaughtExceptionHandler((t, e) -> {
-            e.printStackTrace(System.err);
-            System.exit(1);
-        });
-        run.start();
-    }
-    
     public void run() {
         long currentTime = System.nanoTime();
         long previousTime = currentTime;
-        
+
+        running = true;
         while(running) {
             currentTime = System.nanoTime();
-            double timePassed = (currentTime - previousTime)/ Math.pow(10, 9);
+            deltaTime = (currentTime - previousTime)/ Math.pow(10, 9);
             previousTime = currentTime;
             
             if(requestedStateChange != -1) {
@@ -261,27 +252,27 @@ public class Battlezone extends JFrame implements Runnable {
                 requestedStateChange = -1;
             }
             
-            runState(timePassed);
+            runState();
             render();
         }
     }
     
-    private void runState(double timePassed) {
+    private void runState() {
         if(state == 1)
-            runGame(timePassed);
+            runGame();
         else 
-            runMenu(timePassed);
+            runMenu();
     }    
         
-    private void runGame(double timePassed) {
-        gameUpdate(timePassed);
-        gameLogic(timePassed);
+    private void runGame() {
+        gameUpdate();
+        gameLogic();
     }
     
-    private void runMenu(double timePassed) {
+    private void runMenu() {
         if(state == 5)
-            ((WriteHighScorePage)menuPages[5]).update(timePassed);
-        menuUpdate(timePassed);
+            ((WriteHighScorePage)menuPages[5]).update();
+        menuUpdate();
     }
     
     private void changeState(int newState) {
@@ -401,9 +392,9 @@ public class Battlezone extends JFrame implements Runnable {
         return lives;
     }
     
-    private void gameLogic(double timePassed) {
+    private void gameLogic() {
         if(playerRespawnCounter > 0) {
-            playerRespawnCounter-= timePassed;
+            playerRespawnCounter-= deltaTime;
             if(playerRespawnCounter <= 0) {
                 lives--;
                 if(lives <= 0) {
@@ -421,7 +412,7 @@ public class Battlezone extends JFrame implements Runnable {
         }
         
         if(enemyRespawnCounter > 0) {
-            enemyRespawnCounter-= timePassed;
+            enemyRespawnCounter-= deltaTime;
             if(enemyRespawnCounter <= 0)
                 addEnemy();
         }
@@ -590,7 +581,7 @@ public class Battlezone extends JFrame implements Runnable {
         return player;
     }
     
-    private void gameUpdate(double timePassed) {
+    private void gameUpdate() {
         if(w && !s) 
             player.setTrack2(1);
         else if(s && !w) 
@@ -606,7 +597,7 @@ public class Battlezone extends JFrame implements Runnable {
             player.setTrack1(0);
         
         for(Updatable toUpdate : updatable) 
-            toUpdate.update(timePassed);
+            toUpdate.update();
         
         addUpdatables();
         removeUpdatables();
@@ -615,11 +606,11 @@ public class Battlezone extends JFrame implements Runnable {
         removeOutOfBoundsShells();
     }
     
-    private void menuUpdate(double timePassed) {
-        menuPanAngle += MENU_PAN_SPEED * timePassed;
+    private void menuUpdate() {
+        menuPanAngle += MENU_PAN_SPEED * deltaTime;
         
         for(Updatable toUpdate : updatable) 
-            toUpdate.update(timePassed);
+            toUpdate.update();
         
         addUpdatables();
         removeUpdatables();
@@ -665,7 +656,7 @@ public class Battlezone extends JFrame implements Runnable {
 
     public static void main(String[] args) {
         battlezone = new Battlezone();
-        battlezone.start();
+        battlezone.run();
     }
     
 }

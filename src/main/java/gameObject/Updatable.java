@@ -9,6 +9,6 @@ package gameObject;
  */
 public interface Updatable {
     
-    void update(double time);
+    void update();
     
 }

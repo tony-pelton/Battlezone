@@ -79,7 +79,7 @@ public class HUD implements Updatable {
         int stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 30);
 
-        s = String.format("time: %f", battlezone.getTimePassed());
+        s = String.format("time: %f", battlezone.getDeltaTime());
         stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 70);
 
@@ -190,19 +190,19 @@ public class HUD implements Updatable {
         return angleToTank;
     }
     
-    public void update(double timePassed) {
+    public void update() {
         Battlezone battlezone = Battlezone.getInstance();
         if(battlezone.getPlayer().getDead())
             return;
         
-        rotateRadar(battlezone, timePassed);
-        radarBlip.fade(timePassed);
+        rotateRadar(battlezone, battlezone.getDeltaTime());
+        radarBlip.fade(battlezone.getDeltaTime());
         if(!battlezone.getPlayer().getOnFireCooldown()) {
             reticleBlinkCounter = 0;
             reticleOn = true;
         }
         else {
-            reticleBlinkCounter -= timePassed;
+            reticleBlinkCounter -= battlezone.getDeltaTime();
             if(reticleBlinkCounter <= 0) {
                 reticleOn = !reticleOn;
                 reticleBlinkCounter = reticleBlinkTime;

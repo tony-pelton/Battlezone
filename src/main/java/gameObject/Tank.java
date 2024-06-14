@@ -114,10 +114,10 @@ public class Tank extends MovingObject {
     Battlezone.getInstance().addUpdatable(shell);
   }
   
-  public void update(double timePassed) {
-    super.update(timePassed);
+  public void update() {
+    super.update();
     if (shootCooldownCounter > 0.0D)
-      shootCooldownCounter -= timePassed;
+      shootCooldownCounter -= Battlezone.getInstance().getDeltaTime();
   }
   
   public double getAngleToTank(Tank t) {
@@ -144,7 +144,7 @@ public class Tank extends MovingObject {
       return new double[] {clockwiseDist, Math.PI * 2 - clockwiseDist}; 
   }
   
-  protected void move(double timePassed) {
+  protected void move() {
     double oneTrackBonus = 1.0D;
     if ((track1 == 0) || (track2 == 0)) {
       oneTrackBonus = 1.5D;
@@ -180,9 +180,9 @@ public class Tank extends MovingObject {
     }
     if (((moveValue > 0.0D) && (!forwardCollision)) || ((moveValue < 0.0D) && (!reverseCollision))) {
       setVelocity(moveValue);
-      super.move(timePassed);
+      super.move();
     }
-    rotate(new double[] { 0.0D, trackTurnValue * (track1 - track2), 0.0D }, timePassed);
+    rotate(new double[] { 0.0D, trackTurnValue * (track1 - track2), 0.0D }, battlezone.getDeltaTime());
     setDirectionToAngle();
     updateHitboxes();
   }

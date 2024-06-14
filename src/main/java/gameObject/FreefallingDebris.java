@@ -50,8 +50,9 @@ public class FreefallingDebris
     zAngVel = velocities[5];
   }
   
-  public void move(double timePassed)
+  public void move()
   {
+    double timePassed = Battlezone.getInstance().getDeltaTime();
     setX(getX() + xVel * timePassed);
     setY(getY() + yVel * timePassed);
     setZ(getZ() + zVel * timePassed);
