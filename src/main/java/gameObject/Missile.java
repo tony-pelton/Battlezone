@@ -34,7 +34,7 @@ public class Missile extends MovingObject implements Enemy{
         double previousY = 0;
         Battlezone battlezone = Battlezone.getInstance();
         for(int i = 0; i < numWaypoints; i++) {
-            double x = battlezone.getMapRadius() * (i + 1)/(numWaypoints + 1);
+            double x = Battlezone.MAP_RADIUS * (i + 1)/(numWaypoints + 1);
             double y = ((Math.random() * 2 * maxDivertDistance) - maxDivertDistance);
             if(i != 0 && ((y < 0 && previousY < 0) || (y > 0 && previousY > 0)))
                 y *= -1;
@@ -136,7 +136,7 @@ public class Missile extends MovingObject implements Enemy{
     
     public void update() {
         super.update();
-        missileLogic(Battlezone.getInstance().getDeltaTime());
+        missileLogic(Battlezone.getDeltaTime());
     }
     
     public void move() {
@@ -147,7 +147,7 @@ public class Missile extends MovingObject implements Enemy{
         
         if(!initiallyLanded) {
             midAir = getY() < Obstacle.getObstacleHeight();
-            setY(getY() + fallSpeed * battlezone.getDeltaTime());
+            setY(getY() + fallSpeed * Battlezone.getDeltaTime());
             if(getY() > 0) {
                 setY(0);
                 initiallyLanded = true;
@@ -163,14 +163,14 @@ public class Missile extends MovingObject implements Enemy{
             }
         }
         if(obstacleCollision) {
-            setY(getY() - (battlezone.getDeltaTime() * verticleTraverseSpeed));
+            setY(getY() - (Battlezone.getDeltaTime() * verticleTraverseSpeed));
             midAir = true;
             if(getY() < Obstacle.getObstacleHeight()) {
                 setY(Obstacle.getObstacleHeight());
             }
         }
         else {
-            setY(getY() + (battlezone.getDeltaTime() * verticleTraverseSpeed));
+            setY(getY() + (Battlezone.getDeltaTime() * verticleTraverseSpeed));
             if(getY() > 0) {
                 midAir = false;
                 setY(0);

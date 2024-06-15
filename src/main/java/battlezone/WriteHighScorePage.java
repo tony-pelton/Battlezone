@@ -58,7 +58,7 @@ public class WriteHighScorePage extends MenuPage {
                 }
                 break;
             case KeyEvent.VK_ENTER:
-                Battlezone.getInstance().saveScore();
+                ScoreManager.saveScore();
         }
     }
     
@@ -76,7 +76,7 @@ public class WriteHighScorePage extends MenuPage {
     }
     
     public void update() {
-        flickerCounter -= Battlezone.getInstance().getDeltaTime();
+        flickerCounter -= Battlezone.getDeltaTime();
         if(flickerCounter <= 0) {
             letterFlicker = !letterFlicker;
             flickerCounter = flickerTime;

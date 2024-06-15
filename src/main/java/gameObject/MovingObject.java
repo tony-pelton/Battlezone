@@ -27,7 +27,7 @@ public class MovingObject extends CollideableObject {
     }
     
     protected void move() {
-        double magnitude = velocity * Battlezone.getInstance().getDeltaTime();
+        double magnitude = velocity * Battlezone.getDeltaTime();
         
         double yComp = magnitude * Math.sin(direction[0]);
         double xzComp = magnitude * Math.cos(direction[0]);

@@ -32,9 +32,9 @@ public class ViewHighScorePage extends MenuPage {
         g.drawString(message, X, Y);
     }
     
-    private String[] makeScoresDisplayable(String scores, Battlezone battlezone) {
+    private String[] makeScoresDisplayable(String scores) {
         //makes the string into what the displayed version should be
-        String[] ray = battlezone.getStringArrayScores(scores);
+        String[] ray = ScoreManager.getStringArrayScores(scores);
         for(int i = 0; i < ray.length; i++) {
             ray[i] = (i + 1) + ".  " + ray[i].substring(0, 3) + "   " + ray[i].substring(3);
         }
@@ -50,8 +50,7 @@ public class ViewHighScorePage extends MenuPage {
         writeCenteredText("High Scores:", textSize, (int)pWidth/2, (int)pHeight * 1/8, g);
         textSize = 40;
         try {
-            Battlezone battlezone = Battlezone.getInstance();
-            String[] scores = makeScoresDisplayable(battlezone.getHighScores(), battlezone);
+            String[] scores = makeScoresDisplayable(ScoreManager.getHighScores());
             for(int i = 0; i < scores.length; i++) {
                 writeCenteredText(scores[i], textSize, (int)pWidth/2, (int)pHeight * (2 + i)/8, g);
             }

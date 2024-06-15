@@ -5,6 +5,8 @@ package gameObject;
 import java.awt.Graphics;
 import java.awt.Color;
 import battlezone.Battlezone;
+import battlezone.ScoreManager;
+
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.Font;
@@ -58,12 +60,12 @@ public class HUD implements Updatable {
             drawReticle(g, battlezone, reticleSize, reticlePosition);
         }
         
-        drawScore(g, battlezone, screenDimensions[0]);
-        drawLives(g, battlezone);
+        drawScore(g, screenDimensions[0]);
+        drawLives(g);
     }
     
-    private void drawScore(Graphics g, Battlezone battlezone, int screenWidth) {
-        int score = battlezone.getScore();
+    private void drawScore(Graphics g, int screenWidth) {
+        int score = ScoreManager.getScore();
         
         String s = "";
         if(score < 100000000) 
@@ -79,20 +81,20 @@ public class HUD implements Updatable {
         int stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 30);
 
-        s = String.format("time: %f", battlezone.getDeltaTime());
+        s = String.format("time: %f", Battlezone.getDeltaTime());
         stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 70);
 
     }
     
-    private void drawLives(Graphics g, Battlezone battlezone) {
+    private void drawLives(Graphics g) {
         int y = 30;
         int startX = 30;
         int imageWidth = 70;
         int imageHeight = 30;
         int spaceing = 20;
         
-        for(int i = 0; i < battlezone.getLives(); i++) {
+        for(int i = 0; i < ScoreManager.getLives(); i++) {
             int x = startX + (imageWidth + spaceing) * i;
             g.drawImage(life, x, y, imageWidth, imageHeight, null);
         } 
@@ -195,14 +197,14 @@ public class HUD implements Updatable {
         if(battlezone.getPlayer().getDead())
             return;
         
-        rotateRadar(battlezone, battlezone.getDeltaTime());
-        radarBlip.fade(battlezone.getDeltaTime());
+        rotateRadar(battlezone, Battlezone.getDeltaTime());
+        radarBlip.fade(Battlezone.getDeltaTime());
         if(!battlezone.getPlayer().getOnFireCooldown()) {
             reticleBlinkCounter = 0;
             reticleOn = true;
         }
         else {
-            reticleBlinkCounter -= battlezone.getDeltaTime();
+            reticleBlinkCounter -= Battlezone.getDeltaTime();
             if(reticleBlinkCounter <= 0) {
                 reticleOn = !reticleOn;
                 reticleBlinkCounter = reticleBlinkTime;
@@ -224,7 +226,7 @@ public class HUD implements Updatable {
         double relativeZ = (enemy.getZ() - player.getZ());
         double angleToTank = getAngleOfPlayerToEnemyTank(battlezone);
         
-        double mapRadius = battlezone.getMapRadius();
+        double mapRadius = Battlezone.MAP_RADIUS;
         double currentAngle = angle;
         double angleAfter = angle - (arcSize * 1.5);
         angleToTank -= player.getYRot();

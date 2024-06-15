@@ -115,7 +115,7 @@ public class EnemyTank extends Tank implements Enemy {
     }
     
     public void update() {
-        double timePassed = Battlezone.getInstance().getDeltaTime();
+        double timePassed = Battlezone.getDeltaTime();
         if(remainingDist > 0 || remainingAngle > 0) {
             maneuverAfterBump(timePassed);
         }

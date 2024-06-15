@@ -117,7 +117,7 @@ public class Tank extends MovingObject {
   public void update() {
     super.update();
     if (shootCooldownCounter > 0.0D)
-      shootCooldownCounter -= Battlezone.getInstance().getDeltaTime();
+      shootCooldownCounter -= Battlezone.getDeltaTime();
   }
   
   public double getAngleToTank(Tank t) {
@@ -182,7 +182,7 @@ public class Tank extends MovingObject {
       setVelocity(moveValue);
       super.move();
     }
-    rotate(new double[] { 0.0D, trackTurnValue * (track1 - track2), 0.0D }, battlezone.getDeltaTime());
+    rotate(new double[] { 0.0D, trackTurnValue * (track1 - track2), 0.0D }, Battlezone.getDeltaTime());
     setDirectionToAngle();
     updateHitboxes();
   }

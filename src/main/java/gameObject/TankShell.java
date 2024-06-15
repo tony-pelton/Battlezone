@@ -26,8 +26,8 @@ public class TankShell extends MovingObject {
         Battlezone battlezone = Battlezone.getInstance();
         ArrayList<Obstacle> obstacles = battlezone.getObstacles();
         super.move();
-        dragPoints[0].set(new double[] {dragPoints[0].getX(), dragPoints[0].getY(), -getVelocity() * battlezone.getDeltaTime()});
-        dragPoints[1].set(new double[] {dragPoints[1].getX(), dragPoints[1].getY(), -getVelocity() * battlezone.getDeltaTime()});
+        dragPoints[0].set(new double[] {dragPoints[0].getX(), dragPoints[0].getY(), -getVelocity() * Battlezone.getDeltaTime()});
+        dragPoints[1].set(new double[] {dragPoints[1].getX(), dragPoints[1].getY(), -getVelocity() * Battlezone.getDeltaTime()});
         
         boolean collision = false;
         for(Obstacle ob : obstacles) {

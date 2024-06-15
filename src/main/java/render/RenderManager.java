@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author macle
  */
-public class RenderManager {
+public final class RenderManager {
 
     private RenderManager() {}
 

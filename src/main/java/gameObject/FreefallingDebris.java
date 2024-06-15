@@ -52,7 +52,7 @@ public class FreefallingDebris
   
   public void move()
   {
-    double timePassed = Battlezone.getInstance().getDeltaTime();
+    double timePassed = Battlezone.getDeltaTime();
     setX(getX() + xVel * timePassed);
     setY(getY() + yVel * timePassed);
     setZ(getZ() + zVel * timePassed);

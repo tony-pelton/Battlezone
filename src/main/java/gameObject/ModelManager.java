@@ -8,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author macle
  */
-public class ModelManager {
+public final class ModelManager {
 
     private ModelManager() {}
 

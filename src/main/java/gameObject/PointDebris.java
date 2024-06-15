@@ -38,7 +38,7 @@ public class PointDebris extends MovingObject {
     
     public void update() {
         super.update();
-        lifeTimeLeft -= Battlezone.getInstance().getDeltaTime();
+        lifeTimeLeft -= Battlezone.getDeltaTime();
         if(lifeTimeLeft <= 0) {
             Battlezone.getInstance().removeUpdatable(this);
         }
