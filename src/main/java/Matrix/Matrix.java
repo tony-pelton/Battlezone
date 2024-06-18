@@ -7,7 +7,7 @@ package Matrix;
  * @author macle
  */
 public class Matrix {
-    private double[][] content;
+    private final double[][] content;
 
     public Matrix(double[][] content) {
         if (!checkContentValid(content)) {
@@ -45,6 +45,7 @@ public class Matrix {
         return new Matrix(product);
     }
 
+    @SuppressWarnings("unused")
     public void printMatrix() {
         for (double[] row : content) {
             System.out.println();

@@ -68,10 +68,9 @@ public class WriteHighScorePage extends MenuPage {
         } else {
             font = new Font("Futura", Font.PLAIN, size);
         }
-        int Y = (y);
         int X = (x) - g.getFontMetrics(font).stringWidth(message) / 2;
         g.setFont(font);
-        g.drawString(message, X, Y);
+        g.drawString(message, X, y);
     }
 
     public void update() {
@@ -91,7 +90,7 @@ public class WriteHighScorePage extends MenuPage {
         double pHeight = getScreenDimensions()[1];
         Graphics g = Battlezone.getGraphicsSurface();
         g.setColor(Color.green);
-        writeCenteredText("Congrats, your score of " + score + " is high enough to be on the top 5", textSize, (int) pWidth / 2, (int) pHeight * 1 / 8, false);
+        writeCenteredText("Congrats, your score of " + score + " is high enough to be on the top 5", textSize, (int) pWidth / 2, (int) pHeight / 8, false);
         textSize = 20;
         writeCenteredText("Use arrow keys to enter the name for the score to be saved with", textSize, (int) pWidth / 2, (int) pHeight * 2 / 8, false);
         writeCenteredText("Hit enter to save, or space to not save", textSize, (int) pWidth / 2, (int) pHeight * 3 / 16, false);

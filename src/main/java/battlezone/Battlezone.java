@@ -32,13 +32,13 @@ public class Battlezone extends JFrame {
     private static double deltaTime = 0.0;
     private boolean running;
     private boolean w, s, i, k;
-    private double fov;
-    private ArrayList<Object3D> objects = new ArrayList<Object3D>();
-    private ArrayList<Updatable> updatable = new ArrayList<Updatable>();
-    private ArrayList<Updatable> toAddUpdatable = new ArrayList<Updatable>();
-    private ArrayList<Updatable> toRemoveUpdatable = new ArrayList<Updatable>();
-    private ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
-    private ArrayList<Tank> tanks = new ArrayList<Tank>();
+    private final double fov;
+    private final ArrayList<Object3D> objects = new ArrayList<>();
+    private final ArrayList<Updatable> updatable = new ArrayList<>();
+    private final ArrayList<Updatable> toAddUpdatable = new ArrayList<>();
+    private final ArrayList<Updatable> toRemoveUpdatable = new ArrayList<>();
+    private final ArrayList<Obstacle> obstacles = new ArrayList<>();
+    private final ArrayList<Tank> tanks = new ArrayList<>();
     private PlayerTank player;
     private Enemy enemy;
     private HUD hud;
@@ -159,7 +159,7 @@ public class Battlezone extends JFrame {
     }
 
     private double[] getRandomValidLocation(double objectObstruction, double mapRatio) {
-        double mapRadius = this.MAP_RADIUS * mapRatio;
+        double mapRadius = MAP_RADIUS * mapRatio;
         while (true) {
             double playerX;
             double playerZ;
@@ -283,7 +283,7 @@ public class Battlezone extends JFrame {
                 bulletHeight = player.getBulletHeight();
             }
             Obstacle o = new Obstacle(new double[]{pos[0], 0, pos[1], 0, Math.random() * 2 * Math.PI, 0}, 10, bulletHeight);
-            addUpdatable((Updatable) o);
+            addUpdatable(o);
         }
     }
 
@@ -306,11 +306,11 @@ public class Battlezone extends JFrame {
     }
 
     private void removeOutOfBoundsShells() {
-        for (int i = 0; i < updatable.size(); i++) {
-            if (!(updatable.get(i) instanceof TankShell)) {
+        for (Updatable value : updatable) {
+            if (!(value instanceof TankShell)) {
                 continue;
             }
-            TankShell shell = (TankShell) updatable.get(i);
+            TankShell shell = (TankShell) value;
             if (Math.pow(shell.getX() - player.getX(), 2) + Math.pow(shell.getZ() - player.getZ(), 2) > Math.pow(MAP_RADIUS, 2)) {
                 removeUpdatable(shell);
             }
@@ -343,7 +343,7 @@ public class Battlezone extends JFrame {
     }
 
     private void addUpdatables() {
-        while (toAddUpdatable.size() != 0) {
+        while (!toAddUpdatable.isEmpty()) {
             Updatable u = toAddUpdatable.get(0);
             updatable.add(u);
             if (u instanceof Object3D) {
@@ -360,7 +360,7 @@ public class Battlezone extends JFrame {
     }
 
     private void removeUpdatables() {
-        while (toRemoveUpdatable.size() != 0) {
+        while (!toRemoveUpdatable.isEmpty()) {
             Updatable u = toRemoveUpdatable.get(0);
             updatable.remove(u);
             if (u instanceof Object3D) {
@@ -466,7 +466,7 @@ public class Battlezone extends JFrame {
             ((WriteHighScorePage) menuPages[5]).draw(ScoreManager.getScore());
         }
         if (state == 6) {
-            ((ViewHighScorePage) menuPages[6]).draw();
+            menuPages[6].draw();
         }
         menuPages[state].draw();
 

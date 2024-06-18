@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class TankShell extends MovingObject {
     private final Point[] dragPoints;//used to pull the hitbox out to the distance the shell travels each time.
     //this avoids the shell simply passing through something if it goes to fast
-    private boolean friendly;
+    private final boolean friendly;
 
     public TankShell(double[] position, Model m, boolean friendly) {
         super(position, m, 180, new double[]{position[3], position[4] + Math.PI / 2});
@@ -42,7 +42,7 @@ public class TankShell extends MovingObject {
         if (friendly) {
             t = (CollideableObject) battlezone.getEnemy();
         } else {
-            t = (CollideableObject) battlezone.getPlayer();
+            t = battlezone.getPlayer();
         }
 
         if (t != null && t.bulletBoxCollision(getCollisionBox())) {
@@ -53,12 +53,12 @@ public class TankShell extends MovingObject {
                 ((PlayerTank) t).setDead(true);
             }
             collision = true;
-            battlezone.removeUpdatable((Updatable) t);
+            battlezone.removeUpdatable(t);
         }
 
         if (collision) {
             PointDebris.explode(getPosition());
-            battlezone.removeUpdatable((Updatable) this);
+            battlezone.removeUpdatable(this);
         }
     }
 

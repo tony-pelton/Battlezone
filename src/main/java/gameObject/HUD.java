@@ -19,13 +19,13 @@ public class HUD implements Updatable {
     private final int[] reticlePosition;
     private final double reticleSize;
     private double angle;
-    private double rotationSpeed;
-    private double reticleBlinkTime = 0.15;
+    private final double rotationSpeed;
+    private final double reticleBlinkTime = 0.15;
     private double reticleBlinkCounter = 0;
     private boolean reticleOn = true;
     private BufferedImage crack;
     private BufferedImage life;
-    private Blip radarBlip;
+    private final Blip radarBlip;
 
 
     public HUD(double rotationSpeed, int[] radarPosition, double radarSize, int[] reticlePosition, double reticleSize) {
@@ -130,12 +130,12 @@ public class HUD implements Updatable {
         double spacing = size / 1.8;
 
         g.drawLine((int) (position[0] - size / 2), (int) (position[1] - spacing), (int) (position[0] + size / 2), (int) (position[1] - spacing));
-        g.drawLine((int) (position[0]), (int) (position[1] - spacing), (int) (position[0]), (int) (position[1] - spacing - size));
+        g.drawLine(position[0], (int) (position[1] - spacing), position[0], (int) (position[1] - spacing - size));
         g.drawLine((int) (position[0] - size / 2), (int) (position[1] + spacing), (int) (position[0] + size / 2), (int) (position[1] + spacing));
-        g.drawLine((int) (position[0]), (int) (position[1] + spacing), (int) (position[0]), (int) (position[1] + spacing + size));
+        g.drawLine(position[0], (int) (position[1] + spacing), position[0], (int) (position[1] + spacing + size));
 
         boolean fireReticle = false;
-        double curlSize = size * 1.0 / 10;
+        double curlSize = size / 10;
 
         if (battlezone.getEnemy() != null && !battlezone.getEnemy().getDead()) {
             double fireReticleArc = Math.PI / 64;

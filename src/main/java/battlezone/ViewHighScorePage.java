@@ -25,10 +25,9 @@ public class ViewHighScorePage extends MenuPage {
 
     private void writeCenteredText(String message, int size, int x, int y, Graphics g) {
         Font font = new Font("Futura", Font.PLAIN, size);
-        int Y = (y);
         int X = (x) - g.getFontMetrics(font).stringWidth(message) / 2;
         g.setFont(font);
-        g.drawString(message, X, Y);
+        g.drawString(message, X, y);
     }
 
     private String[] makeScoresDisplayable(String scores) {
@@ -46,7 +45,7 @@ public class ViewHighScorePage extends MenuPage {
         double pHeight = getScreenDimensions()[1];
         Graphics g = Battlezone.getGraphicsSurface();
         g.setColor(Color.green);
-        writeCenteredText("High Scores:", textSize, (int) pWidth / 2, (int) pHeight * 1 / 8, g);
+        writeCenteredText("High Scores:", textSize, (int) pWidth / 2, (int) pHeight / 8, g);
         textSize = 40;
         try {
             String[] scores = makeScoresDisplayable(ScoreManager.getHighScores());

@@ -9,7 +9,7 @@ package Geometry;
 public class Hitbox {
     //Exists only on XZ plane
 
-    private Point[] modelPoints;
+    private final Point[] modelPoints;
     //Where the points are relative to the model
     private Point[] worldPoints;
     //Where the points are relative to the world
@@ -76,16 +76,6 @@ public class Hitbox {
 
     }
 
-    public Point[] getWorldPoints() {
-        //returns copy of worldpoints
-        Point[] points = new Point[worldPoints.length];
-        for (int i = 0; i < worldPoints.length; i++) {
-            Point p = worldPoints[i];
-            points[i] = new Point(p.getX(), p.getY(), p.getZ());
-        }
-        return points;
-    }
-
     public Point[] getModelPoints() {
         return modelPoints;//Returns actual points, will alter the hitbox
     }
@@ -109,11 +99,8 @@ public class Hitbox {
 
     private boolean intersectPossible(Hitbox hitbox) {
         //Returns if an intersetion is possible based on the domain and range of the two hitboxes
-        boolean a = !(domain[1] < hitbox.getDomain()[0] || domain[0] > hitbox.getDomain()[1] ||
+        return !(domain[1] < hitbox.getDomain()[0] || domain[0] > hitbox.getDomain()[1] ||
                 range[1] < hitbox.getRange()[0] || range[0] > hitbox.getRange()[1]);
-        //System.out.println(domain[0] + " " + domain[1] + " " + range[0]  + " " + range[1] + " OtherTank " + hitbox.getDomain()[0] + " " + hitbox.getDomain()[1] + " " + hitbox.getRange()[0]  + " " + hitbox.getRange()[1]);
-        //System.out.println(a);
-        return a;
     }
 
     private void createLines() {

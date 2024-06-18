@@ -15,8 +15,8 @@ public class BackgroundImage implements Updatable {
     private int width;
     private ArrayList<BackgroundEntity> entities;
     private ArrayList<UpdatingBackgroundEntity> updating;
-    private int[] currentScale;
-    private int[] screenDimensions;
+    private final int[] currentScale;
+    private final int[] screenDimensions;
 
     public BackgroundImage(int[] screenDimensions) {
         this.screenDimensions = screenDimensions;
@@ -35,8 +35,8 @@ public class BackgroundImage implements Updatable {
     }
 
     private void addEntities() {
-        entities = new ArrayList<BackgroundEntity>();
-        updating = new ArrayList<UpdatingBackgroundEntity>();
+        entities = new ArrayList<>();
+        updating = new ArrayList<>();
         int[][] linePoints = new int[][]{
                 {700, 0, 1000, -100}, {1000, -100, 1500, 0}, {1000, -100, 1200, 0},
                 {1300, -40, 1800, -150}, {1800, -150, 2200, 0}, {2100, -37, 2300, -300},
@@ -53,9 +53,9 @@ public class BackgroundImage implements Updatable {
     }
 
     private void createLines(int[][] linePoints) {
-        for (int i = 0; i < linePoints.length; i++) {
-            int[] p1 = new int[]{linePoints[i][0], linePoints[i][1]};
-            int[] p2 = new int[]{linePoints[i][2], linePoints[i][3]};
+        for (int[] linePoint : linePoints) {
+            int[] p1 = new int[]{linePoint[0], linePoint[1]};
+            int[] p2 = new int[]{linePoint[2], linePoint[3]};
             entities.add(new BackgroundLine(p1, p2));
         }
     }
@@ -106,11 +106,11 @@ public class BackgroundImage implements Updatable {
     }
 
     private static class VolcanoParticle implements BackgroundEntity, UpdatingBackgroundEntity {
-        private int[] pos;
-        private double xVelocity;
+        private final int[] pos;
+        private final double xVelocity;
         private double yVelocity;
-        private double gravity;
-        private double lifeTime;
+        private final double gravity;
+        private final double lifeTime;
         private double lifeLeft;
 
         public VolcanoParticle(int[] pos, double xVel, double yVel, double grav, double life) {
@@ -150,15 +150,15 @@ public class BackgroundImage implements Updatable {
     }
 
     private static class Volcano implements BackgroundEntity, UpdatingBackgroundEntity {
-        private int[] pos;
-        private double maxTimeForParticle;
+        private final int[] pos;
+        private final double maxTimeForParticle;
         private double timeToNextParticle;
         private double gravity;
         private double maxXVelocity;
         private double maxYVelocity;
-        private double maxParticleLife;
-        private ArrayList<UpdatingBackgroundEntity> updateList;
-        private ArrayList<BackgroundEntity> drawList;
+        private final double maxParticleLife;
+        private final ArrayList<UpdatingBackgroundEntity> updateList;
+        private final ArrayList<BackgroundEntity> drawList;
 
         public Volcano(int[] pos, double time, double gravity, double xVel, double yVel, ArrayList<UpdatingBackgroundEntity> updateList, ArrayList<BackgroundEntity> drawList) {
             this.pos = pos;
@@ -205,8 +205,8 @@ public class BackgroundImage implements Updatable {
     }
 
     private static class BackgroundLine implements BackgroundEntity {
-        private int[] p1;
-        private int[] p2;
+        private final int[] p1;
+        private final int[] p2;
 
         public BackgroundLine(int[] p1, int[] p2) {
             this.p1 = p1;
@@ -214,10 +214,7 @@ public class BackgroundImage implements Updatable {
         }
 
         public boolean withinBounds(double lowBound, double upperBound) {
-            if ((p1[0] >= lowBound && p1[0] <= upperBound) || (p2[0] >= lowBound && p2[0] <= upperBound)) {
-                return true;
-            }
-            return false;
+            return (p1[0] >= lowBound && p1[0] <= upperBound) || (p2[0] >= lowBound && p2[0] <= upperBound);
         }
 
         public void scale(double[] porportions) {

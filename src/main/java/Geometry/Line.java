@@ -8,8 +8,8 @@ package Geometry;
  */
 public class Line {
     //Two dimensional
-    private double[] p1;
-    private double[] p2;
+    private final double[] p1;
+    private final double[] p2;
     private double[] domain;
     private double[] range;
     private double m;
@@ -134,10 +134,7 @@ public class Line {
             return false;
         }
         double[] point = getIntersectPoint(line);
-        if (!pointInDomain(point) || !line.pointInDomain(point)) {
-            return false;
-        }
-        return true;
+        return pointInDomain(point) && line.pointInDomain(point);
     }
 }
  

@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * @author macle
  */
 public abstract class ImagePage extends MenuPage {
-    private BufferedImage image;
+    private final BufferedImage image;
 
     public ImagePage(int[] screenDimensions) {
         super(screenDimensions);

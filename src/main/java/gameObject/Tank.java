@@ -14,11 +14,11 @@ import java.util.ArrayList;
 public class Tank extends MovingObject {
     private int track1;
     private int track2;
-    private double trackTurnValue;
-    private double trackMoveValue;
-    private Point shellPoint;
-    private double shellSize = 0.3;
-    private double shootCooldown = 2.5;
+    private final double trackTurnValue;
+    private final double trackMoveValue;
+    private final Point shellPoint;
+    private final double shellSize = 0.3;
+    private final double shootCooldown = 2.5;
     private double shootCooldownCounter = 0;
     private Hitbox forwardCollisionLine;
     private Hitbox reverseCollisionLine;

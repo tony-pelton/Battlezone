@@ -12,26 +12,21 @@ import java.util.ArrayList;
  * @author Nathan
  */
 public class Missile extends MovingObject implements Enemy {
-    private double turnSpeed = 0.1;
-    private double numWaypoints = 4;
-    private double fallSpeed = 60;
-    private double verticleTraverseSpeed = 80;
-    private double maxDivertDistance = 60;
+    private final double turnSpeed = 0.1;
+    private final double numWaypoints = 4;
+    private final double fallSpeed = 60;
+    private final double verticleTraverseSpeed = 80;
+    private final double maxDivertDistance = 60;
     private ArrayList<double[]> waypoints;
     private boolean initiallyLanded = false;
-    private boolean midAir = true;
     private boolean dead = false;
 
     public Missile(double[] position, double scale) {
         super(position, ModelManager.getMissileModel(scale), 80, new double[]{0, position[4]});
     }
 
-    public static void main(String[] args) {
-
-    }
-
     private void initializeWaypoints() {
-        waypoints = new ArrayList<double[]>();
+        waypoints = new ArrayList<>();
         double previousY = 0;
         Battlezone battlezone = Battlezone.getInstance();
         for (int i = 0; i < numWaypoints; i++) {
@@ -47,7 +42,7 @@ public class Missile extends MovingObject implements Enemy {
             double[] point = new double[]{player.getX() + (Math.cos(playerAngle) * x) - (Math.sin(playerAngle) * y), player.getZ() + (Math.sin(playerAngle) * x) + (Math.cos(playerAngle) * y)};
             waypoints.add(0, point);
         }
-        if (waypoints.size() != 0) {
+        if (!waypoints.isEmpty()) {
             setDirectionToNextWaypoint();
         }
     }
@@ -82,7 +77,7 @@ public class Missile extends MovingObject implements Enemy {
     private void checkForWaypointAchieved(double timePassed) {
         if (getSquaredDistToNextWaypoint() <= Math.pow(getVelocity() * timePassed, 2)) {
             waypoints.remove(0);
-            if (waypoints.size() != 0) {
+            if (!waypoints.isEmpty()) {
                 setDirectionToNextWaypoint();
             } else {
                 PlayerTank player = Battlezone.getInstance().getPlayer();
@@ -117,10 +112,10 @@ public class Missile extends MovingObject implements Enemy {
         if (waypoints == null) {
             initializeWaypoints();
         }
-        if (waypoints.size() != 0) {
+        if (!waypoints.isEmpty()) {
             checkForWaypointAchieved(timePassed);
         }
-        if (waypoints.size() == 0) {
+        if (waypoints.isEmpty()) {
             trackPlayer(timePassed);
         }
 
@@ -132,10 +127,6 @@ public class Missile extends MovingObject implements Enemy {
 
     public void setDead(boolean b) {
         dead = b;
-    }
-
-    public boolean getMidAir() {
-        return midAir;
     }
 
     public boolean getInitiallyLanded() {
@@ -154,7 +145,6 @@ public class Missile extends MovingObject implements Enemy {
         super.move();
 
         if (!initiallyLanded) {
-            midAir = getY() < Obstacle.getObstacleHeight();
             setY(getY() + fallSpeed * Battlezone.getDeltaTime());
             if (getY() > 0) {
                 setY(0);
@@ -172,14 +162,12 @@ public class Missile extends MovingObject implements Enemy {
         }
         if (obstacleCollision) {
             setY(getY() - (Battlezone.getDeltaTime() * verticleTraverseSpeed));
-            midAir = true;
             if (getY() < Obstacle.getObstacleHeight()) {
                 setY(Obstacle.getObstacleHeight());
             }
         } else {
             setY(getY() + (Battlezone.getDeltaTime() * verticleTraverseSpeed));
             if (getY() > 0) {
-                midAir = false;
                 setY(0);
             }
         }
@@ -188,10 +176,10 @@ public class Missile extends MovingObject implements Enemy {
         if (player != null && player.collisionBoxCollision(getCollisionBox())) {
             FreefallingDebris.explode(getPosition());
             player.setDead(true);
-            battlezone.removeUpdatable((Updatable) player);
+            battlezone.removeUpdatable(player);
 
             setDead(true);
-            battlezone.removeUpdatable((Updatable) this);
+            battlezone.removeUpdatable(this);
         }
     }
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public final class ModelManager {
 
-    private static double[][] missileModel = new double[][]{
+    private static final double[][] missileModel = new double[][]{
             {3, 0, 3}, {3, 0, -2}, {-3, 0, -2}, {-3, 0, 3},
             {1, -3.375, 1}, {1, -3, -1}, {-1, -3, -1}, {-1, -3.375, 1},
             {0, -6, 15},
@@ -23,7 +23,7 @@ public final class ModelManager {
             {0, -8.812, 0}, {0.85, -7.5, 7}, {-0.85, -7.5, 7},
             {0, -9.937, 2}
     };
-    private static int[][] missileModelLines = new int[][]{
+    private static final int[][] missileModelLines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 0},
             {0, 4}, {1, 5}, {2, 6}, {3, 7},
             {4, 5}, {5, 6}, {6, 7}, {7, 4},
@@ -34,8 +34,8 @@ public final class ModelManager {
             {21, 22}, {22, 23}, {23, 21},
             {21, 24}, {22, 24}, {23, 24}
     };
-    private static double missileModelScale = 9;
-    private static double[][] tankModel = new double[][]{
+    private static final double missileModelScale = 9;
+    private static final double[][] tankModel = new double[][]{
             {4, 0, 6.5}, {4, 0, -5.5}, {-4, 0, -5.5}, {-4, 0, 6.5},
             {4.5, -1.5, 7.5}, {4.5, -1.5, -6.5}, {-4.5, -1.5, -6.5}, {-4.5, -1.5, 7.5},
             {2.5, -3, 4.5}, {2.5, -3, -5}, {-2.5, -3, -5}, {-2.5, -3, 4.5},
@@ -43,8 +43,8 @@ public final class ModelManager {
             {.25, -4.5, -1.875}, {-.25, -4.5, -1.875}, {.25, -4.5, 5.5}, {-.25, -4.5, 5.5}, {.25, -4, 5.5}, {-.25, -4, 5.5}, {.25, -4, 0}, {-.25, -4, 0},
             {0, -4.25, 5.5}
     };
-    private static double tankModelScale = 13;
-    private static int[][] tankModelLines = new int[][]{
+    private static final double tankModelScale = 13;
+    private static final int[][] tankModelLines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 0},
             {0, 4}, {1, 5}, {2, 6}, {3, 7},
             {4, 5}, {5, 6}, {6, 7}, {7, 4},
@@ -54,63 +54,63 @@ public final class ModelManager {
             {12, 13},
             {14, 15}, {15, 17}, {14, 16}, {16, 17}, {16, 18}, {17, 19}, {18, 19}, {18, 20}, {19, 21}, {14, 20}, {15, 21}, {20, 21}
     };
-    private static double[][] tankShellModel = new double[][]{
+    private static final double[][] tankShellModel = new double[][]{
             {2, -2, 0}, {2, 2, 0}, {-2, 2, 0}, {-2, -2, 0},
             {0, 0, 5}
     };
-    private static double tankShellScale = 4;
-    private static int[][] tankShellModelLines = new int[][]{
+    private static final double tankShellScale = 4;
+    private static final int[][] tankShellModelLines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 0},
             {0, 4}, {1, 4}, {2, 4}, {3, 4}
     };
-    private static double[][] pyramidModel = new double[][]{
+    private static final double[][] pyramidModel = new double[][]{
             {0.5, 0, 0.5}, {0.5, 0, -0.5}, {-0.5, 0, -0.5}, {-0.5, 0, 0.5},
             {0, -1, 0}
     };
-    private static int[][] pyramidModelLines = new int[][]{
+    private static final int[][] pyramidModelLines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 0},
             {0, 4}, {1, 4}, {2, 4}, {3, 4}
     };
-    private static double pyramidScale = 1;
-    private static double[][] prisimModel = new double[][]{
+    private static final double pyramidScale = 1;
+    private static final double[][] prismModel = new double[][]{
             {0.5, 0, 0.5}, {0.5, 0, -0.5}, {-0.5, 0, -0.5}, {-0.5, 0, 0.5},
             {0.5, -1, 0.5}, {0.5, -1, -0.5}, {-0.5, -1, -0.5}, {-0.5, -1, 0.5}
     };
-    private static int[][] prisimModelLines = new int[][]{
+    private static final int[][] prismModelLines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 0},
             {4, 5}, {5, 6}, {6, 7}, {7, 4},
             {0, 4}, {1, 5}, {2, 6}, {3, 7},
     };
-    private static double prisimScale = 1.3;
-    private static double[][] halfPrisimModel = new double[][]{
+    private static final double prismScale = 1.3;
+    private static final double[][] halfPrismModel = new double[][]{
             {0.5, 0, 0.5}, {0.5, 0, -0.5}, {-0.5, 0, -0.5}, {-0.5, 0, 0.5},
             {0.5, -0.3, 0.5}, {0.5, -0.3, -0.5}, {-0.5, -0.3, -0.5}, {-0.5, -0.3, 0.5}
     };
-    private static double debrisScale = 1;
-    private static double[][] debrisModel1 = new double[][]{
+    private static final double debrisScale = 1;
+    private static final double[][] debrisModel1 = new double[][]{
             {0, 1.3, 0}, {0, 0, 1}, {0, -1, -0.25}, {0, -0.5, -0.7},
             {1, 0, 0}, {-1, 0, -0.1}
     };
-    private static int[][] debrisModel1Lines = new int[][]{
+    private static final int[][] debrisModel1Lines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 0},
             {0, 4}, {1, 4}, {2, 4}, {3, 4},
             {0, 5}, {1, 5}, {2, 5}, {3, 5}
     };
-    private static double[][] debrisModel2 = new double[][]{
+    private static final double[][] debrisModel2 = new double[][]{
             {0, 1, 3}, {0.7, 1, 2.5}, {0.5, 1, 0}, {0.2, 1, -0.25}, {-0.4, 1, 2},
             {0, 0, 0.5}, {0, -1.5, 0}
     };
-    private static int[][] debrisModel2Lines = new int[][]{
+    private static final int[][] debrisModel2Lines = new int[][]{
             {0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 0},
             {0, 5}, {5, 6}, {6, 3}, {6, 2}
     };
-    private static double[][] debrisModel3 = new double[][]{
+    private static final double[][] debrisModel3 = new double[][]{
             {0, -1, 4}, {0, -1, -1},
             {0.5, 0, 3.7}, {0.5, 0, 0}, {0, 0, -1}, {-0.5, 0, 0}, {-0.5, 0, 3.5},
             {0, 1, 3}, {0, 1, 0},
             {0, 2, 0}, {0.5, 2, 0}, {0, 2, -1}, {-0.5, 2, 0}
     };
-    private static int[][] debrisModel3Lines = new int[][]{
+    private static final int[][] debrisModel3Lines = new int[][]{
             {0, 1},
             {2, 3}, {3, 4}, {4, 5}, {5, 6},
             {7, 8},
@@ -136,15 +136,13 @@ public final class ModelManager {
         }
         int[][] lineCopy = new int[lines.length][2];
         for (int i = 0; i < lines.length; i++) {
-            for (int j = 0; j < lines[i].length; j++) {
-                lineCopy[i][j] = lines[i][j];
-            }
+            System.arraycopy(lines[i], 0, lineCopy[i], 0, lines[i].length);
         }
         return new Model(null, null, pointCopy, lineCopy, lineCopy);
     }
 
     private static void createBulletBox(Model m, double bulletHeight) {
-        ArrayList<Point> intersections = new ArrayList<Point>();
+        ArrayList<Point> intersections = new ArrayList<>();
         for (int[] lineConnections : m.nonCosmeticLines) {
             Line xLine = new Line(m.points[lineConnections[0]], m.points[lineConnections[1]], 0);
             Line zLine = new Line(m.points[lineConnections[0]], m.points[lineConnections[1]], 2);
@@ -156,7 +154,7 @@ public final class ModelManager {
 
         }
         Point[] boxPoints = new Point[intersections.size()];
-        ArrayList<Object[]> points = new ArrayList<Object[]>();
+        ArrayList<Object[]> points = new ArrayList<>();
         double[] centerPoint = new double[2];
         for (Point p : intersections) {
             centerPoint[0] += p.getX();
@@ -199,7 +197,7 @@ public final class ModelManager {
     }
 
     public static double getObstacleHeight(double scale) {
-        return prisimModel[5][1] * prisimScale * scale;
+        return prismModel[5][1] * prismScale * scale;
     }
 
     public static Model getShellModel(double scaleFactor) {
@@ -243,9 +241,7 @@ public final class ModelManager {
     public static Model getTankModel(double scaleFactor, double bulletHeight) {
         Model model = getScaledModel(tankModel, tankModelLines, scaleFactor, tankModelScale);
         model.nonCosmeticLines = new int[model.lines.length - 12][2];
-        for (int i = 0; i < model.lines.length - 12; i++) {
-            model.nonCosmeticLines[i] = model.lines[i];
-        }
+        System.arraycopy(model.lines, 0, model.nonCosmeticLines, 0, model.lines.length - 12);
         Point[] collisionBox = new Point[4];
         for (int i = 4; i < 8; i++) {
             Point p = model.points[i];
@@ -268,10 +264,10 @@ public final class ModelManager {
             case 3:
             case 4:
             case 5:
-                model = getScaledModel(prisimModel, prisimModelLines, scaleFactor, prisimScale);
+                model = getScaledModel(prismModel, prismModelLines, scaleFactor, prismScale);
                 break;
             default:
-                model = getScaledModel(halfPrisimModel, prisimModelLines, scaleFactor, prisimScale);
+                model = getScaledModel(halfPrismModel, prismModelLines, scaleFactor, prismScale);
                 break;
         }
         Point[] collisionBox = new Point[4];

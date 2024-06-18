@@ -9,12 +9,12 @@ import battlezone.Battlezone;
 
 public class FreefallingDebris
         extends MovingObject {
-    private double xVel;
+    private final double xVel;
     private double yVel;
-    private double zVel;
-    private double xAngVel;
-    private double yAngVel;
-    private double zAngVel;
+    private final double zVel;
+    private final double xAngVel;
+    private final double yAngVel;
+    private final double zAngVel;
 
     public FreefallingDebris(double[] position, double[] velocities, Model m) {
         super(position, m, 0.0D, null);

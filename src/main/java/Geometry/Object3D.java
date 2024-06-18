@@ -13,8 +13,8 @@ import java.awt.*;
  */
 public class Object3D {
     protected boolean positionUpdate = false;
-    private Point[] points;
-    private int[][] lines;
+    private final Point[] points;
+    private final int[][] lines;
     private double x;
     private double y;
     private double z;
@@ -125,15 +125,6 @@ public class Object3D {
 
     public Point[] getPoints() {
         return points;
-    }
-
-    public void transformPoints(Matrix transformationMatrix) {
-        //transforms all the points using a matrix
-        Matrix newPoints = toMatrix(points).multiply(transformationMatrix);
-        for (int i = 0; i < points.length; i++) {
-            Point p = points[i];
-            p.set(newPoints.getRow(i));
-        }
     }
 
     public void transformPoints(Matrix transformationMatrix, Point[] points) {

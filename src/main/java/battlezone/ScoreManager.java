@@ -47,9 +47,9 @@ public final class ScoreManager {
             int[] nameChars = ((WriteHighScorePage) Battlezone.getMenuPages()[5]).getNameChars();
             String name = "" + (char) nameChars[0] + (char) nameChars[1] + (char) nameChars[2];
             scoreList[replaceLocation] = name + score;
-            PrintWriter out = new PrintWriter(new File(Class.class.getResource("scores.txt").getFile()));
-            for (int k = 0; k < scoreList.length; k++) {
-                out.println(scoreList[k]);
+            PrintWriter out = new PrintWriter(Class.class.getResource("scores.txt").getFile());
+            for (String s : scoreList) {
+                out.println(s);
             }
             out.close();
         } catch (Exception e) {

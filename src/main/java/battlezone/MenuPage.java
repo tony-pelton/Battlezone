@@ -8,7 +8,7 @@ package battlezone;
  */
 public abstract class MenuPage {
     //private BufferedImage image;
-    private int[] screenDimensions;
+    private final int[] screenDimensions;
 
     public MenuPage(int[] screenDimensions) {
         this.screenDimensions = screenDimensions;
