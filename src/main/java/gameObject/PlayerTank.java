@@ -4,7 +4,6 @@
 package gameObject;
 
 /**
- *
  * @author macle
  */
 public class PlayerTank extends Tank {

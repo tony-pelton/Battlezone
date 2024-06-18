@@ -13,7 +13,8 @@ public final class ScoreManager {
     private static int score = 0;
     private static int lives = 3;
 
-    private ScoreManager() {}
+    private ScoreManager() {
+    }
 
     public static void initialize() {
         lives = 3;
@@ -26,8 +27,9 @@ public final class ScoreManager {
 
     public static void updateScore(Enemy enemy) {
         score += 1000;
-        if(enemy instanceof Missile)
+        if (enemy instanceof Missile) {
             score += 500;
+        }
     }
 
     public static void saveScore() {
@@ -38,20 +40,19 @@ public final class ScoreManager {
             String scores = getHighScores();
             String[] scoreList = getStringArrayScores(scores);
             int replaceLocation = getScorePlacement();
-            for(int j = scoreList.length - 1; j > replaceLocation; j--) {
+            for (int j = scoreList.length - 1; j > replaceLocation; j--) {
 
                 scoreList[j] = scoreList[j - 1];
             }
-            int[] nameChars = ((WriteHighScorePage)Battlezone.getMenuPages()[5]).getNameChars();
+            int[] nameChars = ((WriteHighScorePage) Battlezone.getMenuPages()[5]).getNameChars();
             String name = "" + (char) nameChars[0] + (char) nameChars[1] + (char) nameChars[2];
             scoreList[replaceLocation] = name + score;
             PrintWriter out = new PrintWriter(new File(Class.class.getResource("scores.txt").getFile()));
-            for(int k = 0; k < scoreList.length; k++) {
+            for (int k = 0; k < scoreList.length; k++) {
                 out.println(scoreList[k]);
             }
             out.close();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
         }
     }
@@ -63,12 +64,11 @@ public final class ScoreManager {
         try {
             Scanner wanner = new Scanner(Battlezone.class.getClassLoader().getResourceAsStream("scores.txt"));
             String scores = "";
-            while(wanner.hasNext()) {
+            while (wanner.hasNext()) {
                 scores += wanner.next() + " ";
             }
             return scores;
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
             return "";
         }
@@ -80,9 +80,9 @@ public final class ScoreManager {
         StringTokenizer tokens = new StringTokenizer(getHighScores());
         int i = -1;
         int j = 0;
-        while(tokens.hasMoreTokens()) {
+        while (tokens.hasMoreTokens()) {
             int scoreAt = Integer.parseInt(tokens.nextToken().substring(3));
-            if(score > scoreAt) {
+            if (score > scoreAt) {
                 i = j;
                 break;
             }
@@ -98,7 +98,7 @@ public final class ScoreManager {
         StringTokenizer tokens = new StringTokenizer(scores);
         String[] fancySchmancy = new String[tokens.countTokens()];
         int i = 0;
-        while(tokens.hasMoreTokens()) {
+        while (tokens.hasMoreTokens()) {
             fancySchmancy[i] = tokens.nextToken();
             i++;
         }

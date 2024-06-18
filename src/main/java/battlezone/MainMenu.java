@@ -3,22 +3,21 @@
  */
 package battlezone;
 
-import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 /**
- *
  * @author macle
  */
-public class MainMenu extends ImagePage{
-    
+public class MainMenu extends ImagePage {
+
     public MainMenu(int[] screenDimensions) {
         super(screenDimensions);
     }
-    
+
     public int getStateChange(int keyPressed) {
-        switch(keyPressed) {
+        switch (keyPressed) {
             case KeyEvent.VK_SPACE:
                 return 1;
             case KeyEvent.VK_W:
@@ -27,16 +26,15 @@ public class MainMenu extends ImagePage{
                 return 6;
         }
         return -1;
-    } 
-    
+    }
+
     protected BufferedImage setImage() {
         try {
             return ImageIO.read(Battlezone.class.getClassLoader().getResourceAsStream("sprites/MainMenu.png"));
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
         }
     }
-    
+
 }

@@ -1,20 +1,19 @@
 package battlezone;
 
+import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 
 /**
- *
  * @author macle
  */
-public class ControlsPage extends ImagePage{
+public class ControlsPage extends ImagePage {
     public ControlsPage(int[] screenDimensions) {
         super(screenDimensions);
     }
 
     public int getStateChange(int keyPressed) {
-        switch(keyPressed) {
+        switch (keyPressed) {
             case KeyEvent.VK_SPACE:
                 return 0;
             case KeyEvent.VK_W:
@@ -28,8 +27,7 @@ public class ControlsPage extends ImagePage{
     protected BufferedImage setImage() {
         try {
             return ImageIO.read(Battlezone.class.getClassLoader().getResourceAsStream("sprites/Controls.png"));
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(System.err);
             return null;
         }

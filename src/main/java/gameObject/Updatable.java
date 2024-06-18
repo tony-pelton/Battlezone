@@ -4,11 +4,10 @@
 package gameObject;
 
 /**
- *
  * @author macle
  */
 public interface Updatable {
-    
+
     void update();
-    
+
 }
