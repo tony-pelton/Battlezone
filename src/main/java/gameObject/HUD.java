@@ -81,7 +81,7 @@ public class HUD implements Updatable {
         int stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 30);
 
-        s = String.format("time: %f", Battlezone.getDeltaTime());
+        s = String.format("time: %.3f", Battlezone.getDeltaTime());
         stringWidth = g.getFontMetrics(font).stringWidth(s);
         g.drawString(s, screenWidth - stringWidth - 20, 70);
 

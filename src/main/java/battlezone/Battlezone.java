@@ -377,7 +377,7 @@ public class Battlezone extends JFrame {
 
         player = new PlayerTank(new double[] {0, 0, 0, 0, 0, 0}, 10, ModelManager.getModelBulletHeight(10));
         addUpdatable(player);
-        hud = new HUD(4, new int[] {getWidth()/2, getHeight()/6}, getHeight() * 80.0/900, new int[] {getWidth()/2, getHeight()/2}, getHeight() * 100.0/900);
+        hud = new HUD(4, new int[] {getWidth()/2, getHeight()/6}, getHeight() * 80.0/900, new int[] {getWidth()/2, (getHeight()/2)-9}, getHeight() * 100.0/900);
         addUpdatable(hud);
         addObstaclesRandomLocation(NUMBER_OF_OBSTACLES);
         addEnemy();
@@ -578,20 +578,18 @@ public class Battlezone extends JFrame {
 
     public void run() {
         logger.info("run()");
-        long currentTime = System.nanoTime();
-        long previousTime = currentTime;
-
+        long previousTime = System.currentTimeMillis();
+        long currentTime;
         running = true;
         while(running) {
-            currentTime = System.nanoTime();
-            deltaTime = (currentTime - previousTime)/ Math.pow(10, 9);
+            currentTime = System.currentTimeMillis();
+            // 1000's of a second
+            deltaTime = 0.001*(currentTime - previousTime);
             previousTime = currentTime;
-
             if(requestedStateChange != -1) {
                 changeState(requestedStateChange);
                 requestedStateChange = -1;
             }
-
             runState();
             render();
         }
