@@ -137,7 +137,7 @@ public class HUD implements Updatable {
         boolean fireReticle = false;
         double curlSize = size / 10;
 
-        if (battlezone.getEnemy() != null && !battlezone.getEnemy().getDead()) {
+        if (battlezone.getEnemy() != null && !((Enemy)battlezone.getEnemy()).getDead()) {
             double fireReticleArc = Math.PI / 64;
 
             double angleToTank = getAngleOfPlayerToEnemyTank(battlezone);
@@ -173,7 +173,7 @@ public class HUD implements Updatable {
 
     private double getAngleOfPlayerToEnemyTank(Battlezone battlezone) {
         PlayerTank player = battlezone.getPlayer();
-        Enemy enemy = battlezone.getEnemy();
+        Enemy enemy = (Enemy) battlezone.getEnemy();
         double relativeX = enemy.getX() - player.getX();
         double relativeZ = (enemy.getZ() - player.getZ());
         double angleToTank = Math.atan(relativeZ / relativeX);
@@ -212,7 +212,7 @@ public class HUD implements Updatable {
     private void rotateRadar(Battlezone battlezone, double timePassed) {
         double arcSize = timePassed * rotationSpeed;
         PlayerTank player = battlezone.getPlayer();
-        Enemy enemy = battlezone.getEnemy();
+        Enemy enemy = (Enemy) battlezone.getEnemy();
         if (enemy == null || enemy.getDead()) {
             angle -= arcSize;
             if (angle < 0) {

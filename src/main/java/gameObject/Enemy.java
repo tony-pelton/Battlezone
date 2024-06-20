@@ -7,7 +7,7 @@ package gameObject;
 /**
  * @author macle
  */
-public interface Enemy {
+public interface Enemy extends Updatable {
     double getX();
 
     double getZ();

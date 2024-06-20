@@ -13,14 +13,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 /**
  * @author macle
  */
 public class Battlezone extends JFrame {
-
-    private static final Logger logger = Logger.getLogger(Battlezone.class.getName());
 
     public static final double MAP_RADIUS = 300;
     private static final double OBSTACLE_OBSTRUCTION_RADIUS = 30;
@@ -33,12 +33,14 @@ public class Battlezone extends JFrame {
     private boolean running;
     private boolean w, s, i, k;
     private final double fov;
+
     private final ArrayList<Object3D> objects = new ArrayList<>();
     private final ArrayList<Updatable> updatable = new ArrayList<>();
-    private final ArrayList<Updatable> toAddUpdatable = new ArrayList<>();
-    private final ArrayList<Updatable> toRemoveUpdatable = new ArrayList<>();
+    private final Queue<Updatable> toAddUpdatable = new LinkedList<>();
+    private final Queue<Updatable> toRemoveUpdatable = new LinkedList<>();
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
     private final ArrayList<Tank> tanks = new ArrayList<>();
+
     private PlayerTank player;
     private Enemy enemy;
     private HUD hud;
@@ -53,10 +55,16 @@ public class Battlezone extends JFrame {
         setResizable(false);
         setSize(1600, 900);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+
+        int x = (gd.getDisplayMode().getWidth() / 2) - (getWidth() / 2);
+        int y = (gd.getDisplayMode().getHeight() / 2) - (getHeight() / 2);
+        setLocation(x,y);
+
         if (false) { // full screen
             setUndecorated(true);
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice gd = ge.getDefaultScreenDevice();
             gd.setFullScreenWindow(this);
         }
         setVisible(true);
@@ -137,7 +145,12 @@ public class Battlezone extends JFrame {
 
     public static void main(String[] args) {
         battlezone = new Battlezone();
-        battlezone.run();
+        try {
+            battlezone.run();
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            System.exit(1);
+        }
     }
 
     private void createMenus() {
@@ -204,7 +217,7 @@ public class Battlezone extends JFrame {
         double[] pos = getRandomValidLocation(TANK_OBSTRUCTION_RADIUS, 3.0 / 4);
         if (player == null) {
             enemy = new EnemyTank(new double[]{pos[0], 0, pos[1], 0, Math.PI * 2 * Math.random(), 0}, 10, -1);
-            addUpdatable((Updatable) enemy);
+            addUpdatable(enemy);
             return;
         }
 
@@ -229,7 +242,7 @@ public class Battlezone extends JFrame {
             enemy.setYRot(Math.random() * 2 * Math.PI);
         }
 
-        addUpdatable((Updatable) enemy);
+        addUpdatable(enemy);
     }
 
     private void addMissile() {
@@ -241,7 +254,7 @@ public class Battlezone extends JFrame {
         }
 
         enemy = new Missile(new double[]{player.getX() + (Math.cos(playerAngle) * MAP_RADIUS), -80, player.getZ() + (Math.sin(playerAngle) * MAP_RADIUS), 0, playerAngle + Math.PI / 2, 0}, 5);
-        addUpdatable((Updatable) enemy);
+        addUpdatable(enemy);
     }
 
     private void replaceOutOfBoundsObstacles() {
@@ -305,18 +318,6 @@ public class Battlezone extends JFrame {
 
     }
 
-    private void removeOutOfBoundsShells() {
-        for (Updatable value : updatable) {
-            if (!(value instanceof TankShell)) {
-                continue;
-            }
-            TankShell shell = (TankShell) value;
-            if (Math.pow(shell.getX() - player.getX(), 2) + Math.pow(shell.getZ() - player.getZ(), 2) > Math.pow(MAP_RADIUS, 2)) {
-                removeUpdatable(shell);
-            }
-        }
-    }
-
     private void replaceOutOfBoundsEnemy() {
 
         double playerX;
@@ -333,7 +334,7 @@ public class Battlezone extends JFrame {
             return;
         }
 
-        removeUpdatable((Updatable) enemy);
+        removeUpdatable(enemy);
         if (state == 1) {
             addEnemy();
         } else {
@@ -344,24 +345,26 @@ public class Battlezone extends JFrame {
 
     private void addUpdatables() {
         while (!toAddUpdatable.isEmpty()) {
-            Updatable u = toAddUpdatable.get(0);
+            Updatable u = toAddUpdatable.remove();
             updatable.add(u);
             if (u instanceof Object3D) {
+                System.out.printf("add Object3D %s\n",u);
                 objects.add((Object3D) u);
             }
             if (u instanceof Obstacle) {
+                System.out.printf("add Obstacle %s\n",u);
                 obstacles.add((Obstacle) u);
             }
             if (u instanceof Tank) {
+                System.out.printf("add Tank %s\n",u);
                 tanks.add((Tank) u);
             }
-            toAddUpdatable.remove(u);
         }
     }
 
     private void removeUpdatables() {
         while (!toRemoveUpdatable.isEmpty()) {
-            Updatable u = toRemoveUpdatable.get(0);
+            Updatable u = toRemoveUpdatable.remove();
             updatable.remove(u);
             if (u instanceof Object3D) {
                 objects.remove((Object3D) u);
@@ -372,7 +375,6 @@ public class Battlezone extends JFrame {
             if (u instanceof Tank) {
                 tanks.remove((Tank) u);
             }
-            toRemoveUpdatable.remove(u);
         }
     }
 
@@ -433,7 +435,6 @@ public class Battlezone extends JFrame {
         removeUpdatables();
         replaceOutOfBoundsObstacles();
         replaceOutOfBoundsEnemy();
-        removeOutOfBoundsShells();
     }
 
     private void menuUpdate() {
@@ -490,7 +491,7 @@ public class Battlezone extends JFrame {
     }
 
     private void changeState(int newState) {
-        logger.info(String.format("current=%d new=%d", state, newState));
+        System.out.printf("current=%d new=%d", state, newState);
         if (newState == 1) {
             initializeGame();
         } else if (state == 1 || state == -1) {
@@ -573,7 +574,7 @@ public class Battlezone extends JFrame {
     }
 
     public void run() {
-        logger.info("run()");
+        System.out.println("run()");
         long previousTime = System.currentTimeMillis();
         long currentTime;
         running = true;

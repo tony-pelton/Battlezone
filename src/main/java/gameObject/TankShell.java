@@ -8,6 +8,8 @@ import battlezone.Battlezone;
 
 import java.util.ArrayList;
 
+import static battlezone.Battlezone.MAP_RADIUS;
+
 /**
  * @author macle
  */
@@ -28,6 +30,18 @@ public class TankShell extends MovingObject {
         Battlezone battlezone = Battlezone.getInstance();
         ArrayList<Obstacle> obstacles = battlezone.getObstacles();
         super.move();
+
+        CollideableObject t;
+        if (friendly) {
+            t = (CollideableObject) battlezone.getEnemy();
+        } else {
+            t = battlezone.getPlayer();
+        }
+
+        if (Math.pow(getX() - t.getX(), 2) + Math.pow(getZ() - t.getZ(), 2) > Math.pow(MAP_RADIUS, 2)) {
+            battlezone.removeUpdatable(this);
+        }
+
         dragPoints[0].set(new double[]{dragPoints[0].getX(), dragPoints[0].getY(), -getVelocity() * Battlezone.getDeltaTime()});
         dragPoints[1].set(new double[]{dragPoints[1].getX(), dragPoints[1].getY(), -getVelocity() * Battlezone.getDeltaTime()});
 
@@ -37,12 +51,6 @@ public class TankShell extends MovingObject {
                 collision = true;
                 break;
             }
-        }
-        CollideableObject t;
-        if (friendly) {
-            t = (CollideableObject) battlezone.getEnemy();
-        } else {
-            t = battlezone.getPlayer();
         }
 
         if (t != null && t.bulletBoxCollision(getCollisionBox())) {
